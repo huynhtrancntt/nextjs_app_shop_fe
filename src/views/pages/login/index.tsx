@@ -74,6 +74,7 @@ const LoginPage: NextPage<TProps> = () => {
                         xs: 'none',
                         sm: 'flex'
                     }}
+
                     sx={{
                         alignItems: 'center',
                         justifyContent: 'center',
