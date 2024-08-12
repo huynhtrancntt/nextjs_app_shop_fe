@@ -69,7 +69,6 @@ const LoginPage: NextPage<TProps> = () => {
                     padding: '40px'
                 }}
             >
-                <CssBaseline />
                 <Box
                     display={{
                         xs: 'none',
@@ -88,7 +87,7 @@ const LoginPage: NextPage<TProps> = () => {
                         src={theme.palette.mode === 'light' ? LoginLight : LoginDark}
                         alt='login image'
                         style={{
-                            height: 'auto',
+                            height: '100%',
                             width: 'auto'
                         }}
                     />
