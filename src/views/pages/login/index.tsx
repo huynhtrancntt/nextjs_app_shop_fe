@@ -11,6 +11,7 @@ import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import { Button, CssBaseline, FormControlLabel, IconButton, InputAdornment, Paper } from '@mui/material';
 import { Checkbox } from '@mui/material';
+import { useTheme } from '@mui/material';
 
 // @hookform
 import { Controller, useForm } from "react-hook-form"
@@ -19,18 +20,26 @@ import * as yup from "yup"
 import { EMAIL_REG, PASSWORD_REG } from 'src/configs/regex';
 import { useState } from 'react';
 
-
 import LoginDark from '/public/images/login-dark.png'
 import LoginLight from '/public/images/login-light.png'
-import { useTheme } from '@mui/material';
+
+// hooks
+import { useAuth } from 'src/hooks/useAuth';
 
 type TProps = {}
 
+type TDefaultValue = {
+    email: string
+    password: string
+}
 
 const LoginPage: NextPage<TProps> = () => {
 
     // ** theme
     const theme = useTheme()
+
+    // context
+    const { login } = useAuth()
 
     // State
     const [showPassword, setShowPassword] = useState(false)
@@ -42,18 +51,29 @@ const LoginPage: NextPage<TProps> = () => {
             password: yup.string().required("Password is required").matches(PASSWORD_REG, "The Pasword is contains at least 8 characters, one uppercase, one lowercase, one number and one special case character")
         })
 
+
+    const defaultValues: TDefaultValue = {
+        email: 'localhost@gmail.com',
+        password: '123456789@Ht'
+    }
+
+
     const { handleSubmit,
         control,
         formState: { errors },
     } = useForm({
-        defaultValues: {
-            email: '',
-            password: ''
-        },
+        defaultValues,
         mode: "onBlur",
         resolver: yupResolver(schema)
     })
     const onSubmit = (data: any) => {
+        if (!Object.keys(errors)?.length) {
+            login({
+                ...data,
+                rememberMe: isRemember
+            })
+        }
+
     }
 
 
