@@ -34,6 +34,7 @@ const UserDropdown = (props: TProps) => {
     const handleClose = () => {
         setAnchorEl(null);
     };
+
     return (
         <>
             <Box sx={{ display: 'flex', alignItems: 'center', textAlign: 'center' }}>
