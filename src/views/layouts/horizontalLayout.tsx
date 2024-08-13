@@ -5,6 +5,7 @@ import { NextPage } from "next"
 import { Badge, IconButton, styled, Toolbar, Typography } from "@mui/material";
 import MuiAppBar, { AppBarProps as MuiAppBarProps } from '@mui/material/AppBar';
 import IconifyIcon from "src/components/Icon";
+import UserDropdown from "src/views/layouts/components/user-dropdown";
 
 const drawerWidth: number = 240;
 
@@ -70,11 +71,12 @@ const HorizontalLayout: NextPage<TProps> = ({ open, toggleDrawer, isHideMenu }) 
                 >
                     Dashboard
                 </Typography>
-                <IconButton color="inherit">
+                <UserDropdown />
+                {/* <IconButton color="inherit">
                     <Badge badgeContent={4} color="secondary">
                         <IconifyIcon icon='ic:round-menu' />
                     </Badge>
-                </IconButton>
+                </IconButton> */}
             </Toolbar>
         </AppBar >
     </>
