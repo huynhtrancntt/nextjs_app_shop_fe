@@ -9,7 +9,7 @@ import { NextPage } from "next"
 import IconifyIcon from "src/components/Icon";
 
 // @Layouts
-import ListVerticalLayout from "./ListVerticalLayout";
+import ListVerticalLayout from "./listVerticalLayout";
 
 const drawerWidth: number = 240;
 const Drawer = styled(MuiDrawer, { shouldForwardProp: (prop) => prop !== 'open' })(
