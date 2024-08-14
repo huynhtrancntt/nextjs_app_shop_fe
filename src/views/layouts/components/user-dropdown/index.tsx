@@ -20,12 +20,17 @@ import { Avatar, Box } from '@mui/material';
 import Icon from 'src/components/Icon'
 import { useAuth } from 'src/hooks/useAuth';
 
+// @ Translation
+import { useTranslation } from 'react-i18next';
+
 type TProps = {}
 
 const UserDropdown = (props: TProps) => {
 
-    const { user, logout } = useAuth()
+    // Translation
+    const { t } = useTranslation()
 
+    const { user, logout } = useAuth()
     const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
     const open = Boolean(anchorEl);
     const handleClick = (event: React.MouseEvent<HTMLElement>) => {
@@ -40,7 +45,7 @@ const UserDropdown = (props: TProps) => {
             <Box sx={{ display: 'flex', alignItems: 'center', textAlign: 'center' }}>
 
 
-                <Tooltip title="Account settings">
+                <Tooltip title={t('Account')}>
                     <IconButton
                         onClick={handleClick}
                         size="small"
@@ -110,7 +115,7 @@ const UserDropdown = (props: TProps) => {
                     {user?.email}
                 </MenuItem>
                 <MenuItem onClick={handleClose}>
-                    <Avatar /> My account
+                    <Avatar />  {t('My_profile')}
                 </MenuItem>
                 <Divider />
                 <MenuItem onClick={handleClose}>
@@ -129,7 +134,7 @@ const UserDropdown = (props: TProps) => {
                     <ListItemIcon>
                         {/* <Logout fontSize="small" /> */}
                     </ListItemIcon>
-                    Logout
+                    {t('Logout')}
                 </MenuItem>
             </Menu>
         </>

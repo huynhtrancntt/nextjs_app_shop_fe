@@ -2,10 +2,14 @@
 import { NextPage } from "next"
 
 // @mui
-import { Badge, IconButton, styled, Toolbar, Typography } from "@mui/material";
+import { Badge, Button, IconButton, styled, Toolbar, Typography } from "@mui/material";
 import MuiAppBar, { AppBarProps as MuiAppBarProps } from '@mui/material/AppBar';
 import IconifyIcon from "src/components/Icon";
-import UserDropdown from "src/views/layouts/components/user-dropdown";
+import ModeToggle from "./components/mode-toggle";
+import { useAuth } from "src/hooks/useAuth";
+import { useRouter } from "next/router";
+import UserDropdown from "./components/user-dropdown";
+import LanguageDropdown from "./components/language-dropdown";
 
 const drawerWidth: number = 240;
 
@@ -40,6 +44,9 @@ type TProps = {
     isHideMenu?: boolean
 }
 const HorizontalLayout: NextPage<TProps> = ({ open, toggleDrawer, isHideMenu }) => {
+    const { user } = useAuth()
+    const router = useRouter()
+
     return <>
         <AppBar position="absolute" open={open}>
             <Toolbar
@@ -71,12 +78,15 @@ const HorizontalLayout: NextPage<TProps> = ({ open, toggleDrawer, isHideMenu }) 
                 >
                     Dashboard
                 </Typography>
-                <UserDropdown />
-                {/* <IconButton color="inherit">
-                    <Badge badgeContent={4} color="secondary">
-                        <IconifyIcon icon='ic:round-menu' />
-                    </Badge>
-                </IconButton> */}
+                <LanguageDropdown />
+                <ModeToggle />
+                {user ? (
+                    <UserDropdown />
+                ) : (
+                    <Button variant='contained' sx={{ ml: 2, width: 'auto' }} onClick={() => router.push("/login")}>
+                        Sign In
+                    </Button>
+                )}
             </Toolbar>
         </AppBar >
     </>
