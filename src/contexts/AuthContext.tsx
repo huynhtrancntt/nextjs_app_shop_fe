@@ -94,7 +94,7 @@ const AuthProvider = ({ children }: Props) => {
         if (redirectURL === "/login" || redirectURL === "/") {
           router.replace('/')
         } else {
-          //router.replace(redirectURL as string)
+          router.replace(redirectURL as string)
         }
 
 
