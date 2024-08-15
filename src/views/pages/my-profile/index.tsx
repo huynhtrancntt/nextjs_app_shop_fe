@@ -47,6 +47,12 @@ import { useAuth } from 'src/hooks/useAuth'
 // import Spinner from 'src/components/spinner'
 // import CustomSelect from 'src/components/custom-select'
 import { getAllRoles } from 'src/services/role'
+import { useDispatch, useSelector } from 'react-redux'
+import { AppDispatch, RootState } from 'src/stores'
+import toast from 'react-hot-toast'
+import { resetInitialState } from 'src/stores/apps/auth'
+import { updateAuthMeAsync } from 'src/stores/apps/auth/actions'
+import Spinner from 'src/components/spinner'
 
 type TProps = {}
 
@@ -64,6 +70,7 @@ const MyProfilePage: NextPage<TProps> = () => {
 
     const [loading, setLoading] = useState(false)
     const [avatar, setAvatar] = useState('')
+
     const [optionRoles, setOptionRoles] = useState<{ label: string; value: string }[]>([])
 
     // ** translate
@@ -72,6 +79,14 @@ const MyProfilePage: NextPage<TProps> = () => {
     // ** theme
     const theme = useTheme()
 
+
+    // redux
+
+    const dispatch: AppDispatch = useDispatch()
+
+    const { isLoading, isErrorUpdateMe, messageUpdateMe, isSuccessUpdateMe } = useSelector(
+        (state: RootState) => state.auth
+    )
 
     const schema = yup.object().shape({
         email: yup.string().required(t('Required_field')).matches(EMAIL_REG, 'The field is must email type'),
@@ -115,8 +130,8 @@ const MyProfilePage: NextPage<TProps> = () => {
             .then(async response => {
                 setLoading(false)
                 const data = response?.data
-                console.log(data)
                 if (data) {
+                    setAvatar(data?.avatar)
                     reset({
                         email: data?.email,
                         address: data?.address,
@@ -151,11 +166,36 @@ const MyProfilePage: NextPage<TProps> = () => {
         fetchAllRoles()
     }, [])
 
+    useEffect(() => {
+        if (messageUpdateMe) {
+            if (isErrorUpdateMe) {
+                toast.error(messageUpdateMe)
+            } else if (isSuccessUpdateMe) {
+                toast.success(messageUpdateMe)
+                fetchGetAuthMe()
+            }
+            dispatch(resetInitialState())
+        }
 
+    }, [isErrorUpdateMe, isSuccessUpdateMe, messageUpdateMe])
 
 
     const onSubmit = (data: any) => {
-
+        console.log(data.p)
+        const { firstName, lastName, middleName } = separationFullName(data.fullName, i18n.language)
+        dispatch(
+            updateAuthMeAsync({
+                email: data.email,
+                firstName: firstName,
+                lastName: lastName,
+                middleName: middleName,
+                role: data.role,
+                phoneNumber: data.phoneNumber,
+                avatar,
+                address: data.address
+                // city: data.city
+            })
+        )
     }
 
     const handleUploadAvatar = async (file: File) => {
@@ -168,7 +208,7 @@ const MyProfilePage: NextPage<TProps> = () => {
 
     return (
         <>
-
+            {loading || (isLoading && <Spinner />)}
             <form onSubmit={handleSubmit(onSubmit)} autoComplete='off' noValidate>
                 <Grid container>
                     <Grid

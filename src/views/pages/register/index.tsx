@@ -55,7 +55,7 @@ const RegisterPage: NextPage<TProps> = () => {
 
     const dispatch: AppDispatch = useDispatch()
 
-    const { isLoading, isSussess, isError, message, typeError } = useSelector((state: RootState) => state.auth)
+    const { isLoading, isSuccess, isError, message, typeError } = useSelector((state: RootState) => state.auth)
 
     const schema = yup
         .object().shape({
@@ -89,13 +89,13 @@ const RegisterPage: NextPage<TProps> = () => {
         if (message) {
             if (isError) {
                 toast.error(message)
-            } else if (isSussess) {
+            } else if (isSuccess) {
                 toast.success(message)
                 router.push(ROUTE_CONFIG.LOGIN)
             }
             dispatch(resetInitialState())
         }
-    }, [isSussess, isError, message])
+    }, [isSuccess, isError, message])
     const onSubmit = (data: FormData) => {
         dispatch(registerAuthAsync({ email: data.email, password: data.password }));
 
