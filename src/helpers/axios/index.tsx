@@ -33,7 +33,6 @@ const AxiosInterceptor: FC<TAxiosInterceptor> = ({ children }) => {
     instanceAxios.interceptors.request.use(async config => {
         const { accessToken, refreshToken } = getLocalStorage()
         //const { temporaryToken } = getTemporaryToken()
-
         if (accessToken) {
             let decodedAccessToken: any = {}
             if (accessToken) {
@@ -79,14 +78,18 @@ const AxiosInterceptor: FC<TAxiosInterceptor> = ({ children }) => {
                                 handleRedirectLogin(router, setUser)
                             })
                     } else {
+
                         handleRedirectLogin(router, setUser)
                     }
                 } else {
+
                     handleRedirectLogin(router, setUser)
                 }
             }
         } else {
             handleRedirectLogin(router, setUser)
+
+
         }
 
         return config

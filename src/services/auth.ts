@@ -10,20 +10,20 @@ import { TChangePassword, TLoginAuth, TRegisterAuth } from 'src/types/auth'
 
 
 export const loginAuth = async (data: TLoginAuth) => {
-    try {
-        const res = await instanceAxios.post(`${CONFIG_API.AUTH.INDEX}/login`, data)
+    // try {
+    const res = await axios.post(`${CONFIG_API.AUTH.INDEX}/login`, data)
 
-        return res.data
-    } catch (error) {
+    return res.data
+    // } catch (error) {
 
-        return null
+    //     return null
 
-    }
+    // }
 }
 
 export const logoutAuth = async () => {
     try {
-        const res = await instanceAxios.post(`${CONFIG_API.AUTH.INDEX}/logout`)
+        const res = await axios.post(`${CONFIG_API.AUTH.INDEX}/logout`)
 
         return res.data
     } catch (error) {

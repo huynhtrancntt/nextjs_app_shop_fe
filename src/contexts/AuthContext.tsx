@@ -16,6 +16,8 @@ import { loginAuth, logoutAuth } from 'src/services/auth'
 import { CONFIG_API } from 'src/configs/api'
 import { clearLocalStorage, setLocalStorage } from 'src/helpers/storage'
 import instanceAxios from 'src/helpers/axios'
+import toast from 'react-hot-toast'
+import { useTranslation } from 'react-i18next'
 
 // ** Defaults
 const defaultProvider: AuthValuesType = {
@@ -40,6 +42,8 @@ const AuthProvider = ({ children }: Props) => {
 
   // ** Hooks
   const router = useRouter()
+
+  const { t } = useTranslation()
 
   useEffect(() => {
     const initAuth = async (): Promise<void> => {
@@ -70,10 +74,8 @@ const AuthProvider = ({ children }: Props) => {
   }, [])
 
   const handleLogin = (params: LoginParams, errorCallback?: ErrCallbackType) => {
-    setLoading(true);
     loginAuth({ email: params.email, password: params.password })
       .then(async response => {
-        setLoading(false);
         params.rememberMe
           ? setLocalStorage({
             userData: JSON.stringify(response.data.user),
@@ -82,13 +84,20 @@ const AuthProvider = ({ children }: Props) => {
           })
           : null
 
+        toast.success(t("Login_success"));
         const returnUrl = router.query.returnUrl
 
         setUser({ ...response.data.user })
 
         const redirectURL = returnUrl && returnUrl !== '/' ? returnUrl : '/'
+        console.log(redirectURL)
+        if (redirectURL === "/login" || redirectURL === "/") {
+          router.replace('/')
+        } else {
+          //router.replace(redirectURL as string)
+        }
 
-        router.replace(redirectURL as string)
+
       })
 
       .catch(err => {
