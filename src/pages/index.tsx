@@ -20,3 +20,5 @@ const Home = () => {
 export default Home
 
 Home.getLayout = (page: React.ReactNode) => <LayoutNotApp>{page}</LayoutNotApp>
+Home.gussetGuard = false;
+Home.authGuard = false;

@@ -16,16 +16,29 @@ import { Controller, useForm } from "react-hook-form"
 import { yupResolver } from "@hookform/resolvers/yup"
 import * as yup from "yup"
 import { EMAIL_REG, PASSWORD_REG } from 'src/configs/regex';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 
 import RegisterDark from '/public/images/register-dark.png'
 import RegisterLight from '/public/images/register-light.png'
 import { useTheme } from '@mui/material';
+import { useDispatch, useSelector } from 'react-redux';
+import { registerAuthAsync } from 'src/stores/apps/auth/actions';
+import { AppDispatch, RootState } from 'src/stores';
+import toast from 'react-hot-toast';
+import FallbackSpinner from 'src/components/fall-back';
+import { ROUTE_CONFIG } from 'src/configs/route';
+import { useRouter } from 'next/router';
+import { resetInitialState } from 'src/stores/apps/auth';
 
 
 type TProps = {}
 
+type TDefaultValue = {
+    email: string
+    password: string
+    passwordComfirm: string
+}
 
 const RegisterPage: NextPage<TProps> = () => {
 
@@ -35,6 +48,15 @@ const RegisterPage: NextPage<TProps> = () => {
     // State
     const [showPassword, setShowPassword] = useState(false)
     const [showPasswordConfirm, setShowPasswordConfirm] = useState(false)
+
+    //
+    const router = useRouter()
+    // Reducer
+
+    const dispatch: AppDispatch = useDispatch()
+
+    const { isLoading, isSussess, isError, message, typeError } = useSelector((state: RootState) => state.auth)
+
     const schema = yup
         .object().shape({
             email: yup.string().required("Email is required").matches(EMAIL_REG, "Invalid email address"),
@@ -45,24 +67,44 @@ const RegisterPage: NextPage<TProps> = () => {
                 .oneOf([yup.ref('password'), ''], 'Passwords must match')
         })
 
+    const defaultValues: TDefaultValue = {
+        email: 'localhost@gmail.com',
+        password: '123456789@Ht',
+        passwordComfirm: '123456789@Ht'
+    }
     const { handleSubmit,
         control,
         formState: { errors },
     } = useForm({
-        defaultValues: {
-            email: '',
-            password: '',
-            passwordComfirm: ''
-        },
+        defaultValues,
         mode: "onBlur",
         resolver: yupResolver(schema)
     })
-    const onSubmit = (data: any) => {
+    type FormData = {
+        email: string;
+        password: string;
+    };
+
+    useEffect(() => {
+        if (message) {
+            if (isError) {
+                toast.error(message)
+            } else if (isSussess) {
+                toast.success(message)
+                router.push(ROUTE_CONFIG.LOGIN)
+            }
+            dispatch(resetInitialState())
+        }
+    }, [isSussess, isError, message])
+    const onSubmit = (data: FormData) => {
+        dispatch(registerAuthAsync({ email: data.email, password: data.password }));
+
     }
 
 
     return (
         <>
+            {isLoading && <FallbackSpinner />}
             <Box
                 sx={{
                     height: '100vh',
