@@ -22,6 +22,8 @@ import { useAuth } from 'src/hooks/useAuth';
 
 // @ Translation
 import { useTranslation } from 'react-i18next';
+import { useRouter } from 'next/router';
+import { ROUTE_CONFIG } from 'src/configs/route';
 
 type TProps = {}
 
@@ -33,12 +35,20 @@ const UserDropdown = (props: TProps) => {
     const { user, logout } = useAuth()
     const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
     const open = Boolean(anchorEl);
+
+    const router = useRouter()
+
     const handleClick = (event: React.MouseEvent<HTMLElement>) => {
         setAnchorEl(event.currentTarget);
     };
     const handleClose = () => {
         setAnchorEl(null);
     };
+
+    const handleNavigateMyProfile = () => {
+        router.push(ROUTE_CONFIG.My_profile);
+        handleClose();
+    }
 
     return (
         <>
@@ -114,26 +124,16 @@ const UserDropdown = (props: TProps) => {
                 <MenuItem onClick={handleClose}>
                     {user?.email}
                 </MenuItem>
-                <MenuItem onClick={handleClose}>
-                    <Avatar />  {t('My_profile')}
+                <MenuItem onClick={handleNavigateMyProfile}>
+                    <Avatar>
+                        <Icon icon='arcticons:phone-manager' />
+                    </Avatar>{' '}  {t('My_profile')}
                 </MenuItem>
                 <Divider />
-                <MenuItem onClick={handleClose}>
-                    <ListItemIcon>
-                        {/* <PersonAdd fontSize="small" /> */}
-                    </ListItemIcon>
-                    Add another account
-                </MenuItem>
-                <MenuItem onClick={handleClose}>
-                    <ListItemIcon>
-                        {/* <Settings fontSize="small" /> */}
-                    </ListItemIcon>
-                    Settings
-                </MenuItem>
                 <MenuItem onClick={logout}>
-                    <ListItemIcon>
-                        {/* <Logout fontSize="small" /> */}
-                    </ListItemIcon>
+                    <Avatar sx={{ backgroundColor: 'transparent' }}>
+                        <Icon icon='material-symbols-light:logout' />
+                    </Avatar>
                     {t('Logout')}
                 </MenuItem>
             </Menu>
