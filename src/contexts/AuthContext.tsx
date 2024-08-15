@@ -90,13 +90,8 @@ const AuthProvider = ({ children }: Props) => {
         setUser({ ...response.data.user })
 
         const redirectURL = returnUrl && returnUrl !== '/' ? returnUrl : '/'
-        console.log(redirectURL)
-        if (redirectURL === "/login" || redirectURL === "/") {
-          router.replace('/')
-        } else {
-          router.replace(redirectURL as string)
-        }
 
+        router.replace(redirectURL as string)
 
       })
 
