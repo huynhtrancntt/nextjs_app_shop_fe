@@ -25,6 +25,8 @@ import LoginLight from '/public/images/login-light.png'
 
 // hooks
 import { useAuth } from 'src/hooks/useAuth';
+import toast from 'react-hot-toast';
+import { useTranslation } from 'react-i18next';
 
 type TProps = {}
 
@@ -38,6 +40,7 @@ const LoginPage: NextPage<TProps> = () => {
     // ** theme
     const theme = useTheme()
 
+    const { t } = useTranslation()
     // context
     const { login } = useAuth()
 
@@ -71,6 +74,8 @@ const LoginPage: NextPage<TProps> = () => {
             login({
                 ...data,
                 rememberMe: isRemember
+            }, err => {
+                if (err?.response?.data?.typeError === 'INVALID') toast.error(t('The_email_or_password_wrong'))
             })
         }
 
