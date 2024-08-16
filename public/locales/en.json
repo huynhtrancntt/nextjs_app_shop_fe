@@ -157,7 +157,6 @@
   "Enter_price_delivery_type": "Enter price",
   "least_1000_in_price": "Price must be at least 1000",
   "Type_product": "Product type",
-
   "Create_product_type_success": "Product type created successfully",
   "Update_product_type_success": "Product type updated successfully",
   "Create_product_type_error": "Product type creation failed",
@@ -310,10 +309,10 @@
   "Comment_product": "Product comments",
   "My_cart": "My cart",
   "Popular_products": "Popular product",
-  "Count_user_by_status":"Count user by status",
-  "Count_order_by_status":"Count order by status",
-  "Delivery_status":"Delivery status",
-  "Paid_status":"Paid status",
+  "Count_user_by_status": "Count user by status",
+  "Count_order_by_status": "Count order by status",
+  "Delivery_status": "Delivery status",
+  "Paid_status": "Paid status",
   "Notifications": "Notification",
   "Marked_all_notification_success": "Marked all notification success",
   "Delete_notification_success": "Delete notification success",
@@ -322,10 +321,11 @@
   "Marked_notification_failed": "Marked notification failed",
   "Marked_notification_success": "Marked notification success",
   "Unread": "Unread",
-  "Read":"Read",
+  "Read": "Read",
   "Payment_vn_pay_success": "Payment VNPay success",
   "Payment_vn_pay_failed": "Payment VNPay failed",
   "ratings": "ratings",
   "comments": "comments",
-  "Product_details": "Details product"
+  "Product_details": "Details product",
+  "View": "View"
 }

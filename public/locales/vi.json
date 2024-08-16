@@ -131,7 +131,6 @@
   "Create_delivery_type": "Thêm phương thức giao hàng",
   "Name_delivery_type": "Tên phương thức giao hàng",
   "Enter_name_delivery_type": "Nhập tên phương thức giao hàng",
-
   "Create_payment_type_success": "Tạo phương thức thanh toán thành công",
   "Update_payment_type_success": "Cập nhật phương thức thanh toán thành công",
   "Create_payment_type_error": "Tạo phương thức thanh toán thất bại",
@@ -158,7 +157,6 @@
   "Enter_price_delivery_type": "Nhập giá",
   "least_1000_in_price": "Giá phải ít nhất 1000",
   "Type_product": "Loại sản phẩm",
-
   "Create_product_type_success": "Tạo loại sản phẩm thành công",
   "Update_product_type_success": "Cập nhật loại sản phẩm thành công",
   "Create_product_type_error": "Tạo loại sản phẩm thất bại",
@@ -177,7 +175,6 @@
   "Enter_name_product_type": "Nhập tên loại sản phẩm",
   "Enter_slug": "Nhập slug",
   "Slug": "Slug",
-
   "Create_product_success": "Tạo sản phẩm thành công",
   "Update_product_success": "Cập nhật sản phẩm thành công",
   "Create_product_error": "Tạo sản phẩm thất bại",
@@ -197,7 +194,6 @@
   "Change_image_product": "Thay đổi ảnh sản phẩm",
   "Upload_image_product": "Tải ảnh sản phẩm",
   "Status_product": "Trạng thái sản phẩm",
-
   "Count_in_stock": "Số lượng sản phẩm trong kho",
   "Price": "Giá",
   "Enter_price": "Nhập giá",
@@ -351,5 +347,6 @@
   "Payment_vn_pay_failed": "Thanh toán VNPay thất bại",
   "ratings": "đánh giá",
   "comments": "bình luận",
-  "Product_details": "Chi tiết sản phẩm"
+  "Product_details": "Chi tiết sản phẩm",
+  "View": "Xem"
 }

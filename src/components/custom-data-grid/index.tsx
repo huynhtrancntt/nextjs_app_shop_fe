@@ -9,12 +9,16 @@ const StyleCustomGrid = styled(DataGrid)<DataGridProps>(({ theme }) => ({
   },
   '.MuiDataGrid-selectedRowCount': {
     display: 'none'
+  },
+  '.MuiDataGrid-columnHeaderTitle': {
+    textTransform: 'capitalize',
+    color: theme.palette.primary.main
   }
 }))
 
 const CustomDataGrid = React.forwardRef((props: DataGridProps, ref: Ref<any>) => {
   return (
-    <Box sx={{ height: 400, width: '100%' }}>
+    <Box sx={{ height: '100%', width: '100%', overflow: 'auto' }}>
       <StyleCustomGrid {...props} />
     </Box>
   )
