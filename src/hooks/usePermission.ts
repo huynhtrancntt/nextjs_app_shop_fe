@@ -4,18 +4,23 @@ import { useAuth } from 'src/hooks/useAuth'
 
 type TActions = 'CREATE' | 'VIEW' | 'UPDATE' | 'DELETE'
 
+type PermissionsMap = Record<TActions, string>
+
+// Giả định rằng userPermission là một mảng chuỗi
+type UserPermissions = string[]
+
 export const usePermission = (key: string, actions: TActions[]) => {
     const { user } = useAuth()
-    const defaultValues = {
+    const defaultValues: Record<TActions, boolean> = {
         VIEW: false,
         CREATE: false,
         UPDATE: false,
         DELETE: false
     }
 
-    const getObjectValue = (obj: any, key: string) => {
+    const getObjectValue = <T extends Record<string, any>>(obj: T, key: string): T | undefined => {
         const keys = key.split('.')
-        let result = obj
+        let result: any = obj
         if (keys && !!key.length) {
             for (const k of keys) {
                 if (k in result) {
@@ -29,24 +34,29 @@ export const usePermission = (key: string, actions: TActions[]) => {
         return result
     }
 
-    const userPermission = user?.role?.permissions
+    // Xác định kiểu của userPermission là mảng chuỗi
+    const userPermission: UserPermissions | undefined = user?.role?.permissions
 
     const [permission, setPermission] = useState(defaultValues)
 
     useEffect(() => {
-        const mapPermission = getObjectValue(PERMISSIONS, key)
-        actions.forEach(mode => {
-            if (userPermission?.includes(PERMISSIONS.ADMIN)) {
-                defaultValues[mode] = true
-            } else if (userPermission?.includes(mapPermission[mode])) {
-                defaultValues[mode] = true
-            } else {
-                defaultValues[mode] = false
-            }
-        })
-        setPermission(defaultValues)
+        const mapPermission = getObjectValue<PermissionsMap>(PERMISSIONS, key)
+
+        if (mapPermission && userPermission) {
+            const updatedPermissions = { ...defaultValues }
+            actions.forEach(mode => {
+                if (userPermission.includes(PERMISSIONS.ADMIN)) {
+                    updatedPermissions[mode] = true
+                } else if (userPermission.includes(mapPermission[mode])) {
+                    updatedPermissions[mode] = true
+                } else {
+                    updatedPermissions[mode] = false
+                }
+            })
+            setPermission(updatedPermissions)
+        }
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [user?.role])
+    }, [user?.role, actions, key])
 
     return permission
 }
