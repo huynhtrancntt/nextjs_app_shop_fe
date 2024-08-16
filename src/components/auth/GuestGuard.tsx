@@ -1,13 +1,14 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
-// ** React Imports
+// ** Next
 import { useRouter } from 'next/router'
+
+// ** React Imports
 import { ReactNode, ReactElement, useEffect } from 'react'
 
-// @Auth
-import { useAuth } from 'src/hooks/useAuth'
-// @Configs
+// ** Config
 import { ACCESS_TOKEN, USER_DATA } from 'src/configs/auth'
 
+// ** Hooks
+import { useAuth } from 'src/hooks/useAuth'
 
 interface GuestGuardProps {
   children: ReactNode
@@ -16,12 +17,13 @@ interface GuestGuardProps {
 
 const GuestGuard = (props: GuestGuardProps) => {
   const { children, fallback } = props
-  // @ router
+
+  // ** router
   const router = useRouter()
 
-  // @ auth
+  // ** auth
   const authContext = useAuth()
-
+  console.log('authContext', { authContext })
   useEffect(() => {
     if (!router.isReady) {
       return

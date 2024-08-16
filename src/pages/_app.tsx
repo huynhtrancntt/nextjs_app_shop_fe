@@ -1,44 +1,39 @@
-// ** React Imports
+// ** React
 import { ReactNode } from 'react'
-
-// ** Next Imports
+// ** Next
 import Head from 'next/head'
 import { Router } from 'next/router'
 import type { NextPage } from 'next'
 import type { AppProps } from 'next/app'
-
-// ** Store Imports
+// ** Store
 import { Provider } from 'react-redux'
-
-// ** Loader Import
+// ** Loader
 import NProgress from 'nprogress'
-
-// ** Config Imports
+// ** Config
 import 'src/configs/i18n'
 import { defaultACLObj } from 'src/configs/acl'
 import themeConfig from 'src/configs/themeConfig'
-
-// ** Third Party Import
+// ** Third Party
 import { Toaster } from 'react-hot-toast'
-
 // ** Contexts
 import { AuthProvider } from 'src/contexts/AuthContext'
-
+import { SettingsConsumer, SettingsProvider } from 'src/contexts/SettingsContext'
 // ** Global css styles
 import 'src/styles/globals.scss'
-
+// ** Redux
 import { store } from 'src/stores'
+// ** Component
 import GuestGuard from 'src/components/auth/GuestGuard'
 import AuthGuard from 'src/components/auth/AuthGuard'
-import FallbackSpinner from 'src/components/fall-back'
-import { SettingsConsumer, SettingsProvider } from 'src/contexts/SettingsContext'
 import AclGuard from 'src/components/auth/AclGuard'
+import FallbackSpinner from 'src/components/fall-back'
 import ReactHotToast from 'src/components/react-hot-toast'
-import { useSettings } from 'src/hooks/useSettings'
 import ThemeComponent from 'src/theme/ThemeComponent'
+import NoGuard from 'src/components/auth/NoGuard'
 import UserLayout from 'src/views/layouts/userLayout'
-
-// @axios
+// ** Hook
+import { useSettings } from 'src/hooks/useSettings'
+// ** Axios
 import { AxiosInterceptor } from 'src/helpers/axios'
 
 type ExtendedAppProps = AppProps & {
@@ -68,7 +63,7 @@ const Guard = ({ children, authGuard, guestGuard }: GuardProps) => {
   if (guestGuard) {
     return <GuestGuard fallback={<FallbackSpinner />}>{children}</GuestGuard>
   } else if (!guestGuard && !authGuard) {
-    return <>{children}</>
+    return <NoGuard fallback={<FallbackSpinner />}>{children}</NoGuard>
   } else {
     return <AuthGuard fallback={<FallbackSpinner />}>{children}</AuthGuard>
   }
@@ -77,7 +72,6 @@ const Guard = ({ children, authGuard, guestGuard }: GuardProps) => {
 export default function App(props: ExtendedAppProps) {
   const { Component, pageProps } = props
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { settings } = useSettings()
 
   // Variables

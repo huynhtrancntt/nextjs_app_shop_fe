@@ -1,20 +1,20 @@
 export type TParamsGetRoles = {
-    limit?: number
-    page?: number
-    search?: string
-    order?: string
+  limit?: number
+  page?: number
+  search?: string
+  order?: string
 }
 
 export type TParamsCreateRole = {
-    name: string
+  name: string
 }
 
 export type TParamsEditRole = {
-    name: string
-    id: string
+  name: string
+  id: string
 }
 
 export type TParamsDeleteRole = {
-    name: string
-    id: string
+  name: string
+  id: string
 }
