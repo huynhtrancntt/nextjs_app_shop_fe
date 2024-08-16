@@ -83,6 +83,11 @@ const UserDropdown = (props: TProps) => {
         handleClose();
     }
 
+    const handleNavigateChangePassword = () => {
+        router.push(ROUTE_CONFIG.CHANGE_PASSWORD);
+        handleClose();
+    }
+
     return (
         <>
             <Box sx={{ display: 'flex', alignItems: 'center', textAlign: 'center' }}>
@@ -183,9 +188,18 @@ const UserDropdown = (props: TProps) => {
                 </Box>
                 <Divider />
                 <MenuItem onClick={handleNavigateMyProfile}>
-                    <Avatar>
+                    <Avatar sx={{ backgroundColor: 'transparent' }}>
                         <Icon icon='arcticons:phone-manager' />
-                    </Avatar>{' '}  {t('My_profile')}
+                    </Avatar>
+
+                    {' '}  {t('My_profile')}
+                </MenuItem>
+                <MenuItem onClick={handleNavigateChangePassword}>
+                    <Avatar sx={{ backgroundColor: 'transparent' }}>
+                        <Icon icon='arcticons:password' />
+                    </Avatar>
+
+                    {' '}  {t('Change_password')}
                 </MenuItem>
                 <Divider />
                 <MenuItem onClick={logout}>

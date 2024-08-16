@@ -5,7 +5,7 @@ import { FC } from 'react'
 import { NextRouter, useRouter } from 'next/router'
 import { UserDataType } from 'src/contexts/types'
 import { useAuth } from 'src/hooks/useAuth'
-import { clearLocalStorage, getLocalStorage, setLocalStorage } from '../storage'
+import { clearLocalStorage, clearTemporaryToken, getLocalStorage, getTemporaryToken, setLocalStorage } from '../storage'
 
 type TAxiosInterceptor = {
     children: React.ReactNode
@@ -22,6 +22,7 @@ const handleRedirectLogin = (router: NextRouter, setUser: (data: UserDataType | 
     }
     setUser(null)
     clearLocalStorage()
+    clearTemporaryToken()
 }
 
 const instanceAxios = axios.create({ baseURL: BASE_URL })
@@ -32,17 +33,17 @@ const AxiosInterceptor: FC<TAxiosInterceptor> = ({ children }) => {
 
     instanceAxios.interceptors.request.use(async config => {
         const { accessToken, refreshToken } = getLocalStorage()
-        //const { temporaryToken } = getTemporaryToken()
-        if (accessToken) {
+        const { temporaryToken } = getTemporaryToken()
+        if (accessToken || temporaryToken) {
             let decodedAccessToken: any = {}
             if (accessToken) {
                 decodedAccessToken = jwtDecode(accessToken)
             }
-            //  else if (temporaryToken) {
-            //     decodedAccessToken = jwtDecode(temporaryToken)
-            // }
+            else if (temporaryToken) {
+                decodedAccessToken = jwtDecode(temporaryToken)
+            }
             if (decodedAccessToken?.exp > Date.now() / 1000) {
-                config.headers['Authorization'] = `Bearer ${accessToken}`
+                config.headers['Authorization'] = `Bearer ${accessToken ?? temporaryToken}`
             } else {
                 if (refreshToken) {
                     const deoodedRefreshToken: any = jwtDecode(refreshToken)
