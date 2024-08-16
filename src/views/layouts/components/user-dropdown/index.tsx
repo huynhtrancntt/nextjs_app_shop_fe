@@ -88,6 +88,11 @@ const UserDropdown = (props: TProps) => {
         handleClose();
     }
 
+    const handleNavigateManageSystem = () => {
+        router.push(ROUTE_CONFIG.DASHBOARD)
+        handleClose()
+    }
+
     return (
         <>
             <Box sx={{ display: 'flex', alignItems: 'center', textAlign: 'center' }}>
@@ -187,15 +192,21 @@ const UserDropdown = (props: TProps) => {
                     </Box>
                 </Box>
                 <Divider />
+                <MenuItem onClick={handleNavigateManageSystem}>
+                    <Avatar>
+                        <Icon icon='arcticons:phone-manager' />
+                    </Avatar>{' '}
+                    {t('Manage_system')}
+                </MenuItem>
                 <MenuItem onClick={handleNavigateMyProfile}>
-                    <Avatar sx={{ backgroundColor: 'transparent' }}>
+                    <Avatar>
                         <Icon icon='arcticons:phone-manager' />
                     </Avatar>
 
                     {' '}  {t('My_profile')}
                 </MenuItem>
                 <MenuItem onClick={handleNavigateChangePassword}>
-                    <Avatar sx={{ backgroundColor: 'transparent' }}>
+                    <Avatar >
                         <Icon icon='arcticons:password' />
                     </Avatar>
 
