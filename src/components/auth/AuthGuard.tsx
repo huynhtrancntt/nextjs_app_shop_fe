@@ -9,7 +9,7 @@ import { useAuth } from 'src/hooks/useAuth'
 // @Configs
 import { ACCESS_TOKEN, USER_DATA } from 'src/configs/auth'
 
-import { clearLocalStorage } from 'src/helpers/storage'
+import { clearLocalStorage, clearTemporaryToken, getTemporaryToken } from 'src/helpers/storage'
 
 interface AuthGuardProps {
   children: ReactNode
@@ -30,10 +30,10 @@ const AuthGuard = (props: AuthGuardProps) => {
     if (!router.isReady) {
       return
     }
-
+    const { temporaryToken } = getTemporaryToken()
     if (authContext.user === null &&
       !window.localStorage.getItem(ACCESS_TOKEN) &&
-      !window.localStorage.getItem(USER_DATA)) {
+      !window.localStorage.getItem(USER_DATA) && !temporaryToken) {
       if (router.asPath !== '/' && router.asPath !== '/login') {
         router.replace({
           pathname: '/login',
@@ -48,6 +48,16 @@ const AuthGuard = (props: AuthGuardProps) => {
 
   }, [router.route])
 
+  useEffect(() => {
+    const handleUnload = () => {
+      clearTemporaryToken()
+    }
+    window.addEventListener('beforeunload', handleUnload)
+
+    return () => {
+      window.addEventListener('beforeunload', handleUnload)
+    }
+  }, [])
   if (authContext.loading || authContext.user === null) {
     return fallback
   }

@@ -14,7 +14,7 @@ import authConfig from 'src/configs/auth'
 import { AuthValuesType, LoginParams, ErrCallbackType, UserDataType } from './types'
 import { loginAuth, logoutAuth } from 'src/services/auth'
 import { CONFIG_API } from 'src/configs/api'
-import { clearLocalStorage, setLocalStorage } from 'src/helpers/storage'
+import { clearLocalStorage, clearTemporaryToken, setLocalStorage, setTemporaryToken } from 'src/helpers/storage'
 import instanceAxios from 'src/helpers/axios'
 import toast from 'react-hot-toast'
 import { useTranslation } from 'react-i18next'
@@ -82,7 +82,7 @@ const AuthProvider = ({ children }: Props) => {
             accessToken: response.data.access_token,
             refreshToken: response.data.refresh_token
           })
-          : null
+          : setTemporaryToken(response.data.access_token)
 
         toast.success(t("Login_success"));
         const returnUrl = router.query.returnUrl
