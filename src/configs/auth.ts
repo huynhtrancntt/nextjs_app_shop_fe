@@ -1,13 +1,8 @@
 export default {
-  meEndpoint: '/auth/me',
-  loginEndpoint: '/jwt/login',
-  registerEndpoint: '/jwt/register',
-  storageTokenKeyName: 'access_token',
-  onTokenExpiration: 'refresh_token',
+  storageTokenKeyName: 'accessToken',
+  onTokenExpiration: 'refreshToken' // logout | refreshToken
 }
-
-
-export const ACCESS_TOKEN = 'access_token'
-export const REFRESH_TOKEN = 'refresh_token'
+export const ACCESS_TOKEN = 'accessToken'
+export const REFRESH_TOKEN = 'refreshToken'
 export const USER_DATA = 'userData'
 export const TEMPORARY_TOKEN = 'temporaryToken'

@@ -1,17 +1,13 @@
-
-import Head from 'next/head'
+// ** Next
+import { NextPage } from 'next'
+// ** Pages
 import RoleListPage from 'src/views/pages/system/role/RoleList'
-// import LayoutNotApp from 'src/views/layouts/layoutNotApp'
+// ** Views
 
-const Index = () => {
+type TProps = {}
 
-  return (
-    <>
-      <RoleListPage />
-    </>
-  )
+const Index: NextPage<TProps> = () => {
+  return <RoleListPage />
 }
-export default Index
 
-// ManageSystem.getLayout = (page: React.ReactNode) => <LayoutNotApp>{page}</LayoutNotApp>
-// Index.gusetGuard = true
+export default Index

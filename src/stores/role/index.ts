@@ -1,9 +1,10 @@
 // ** Redux
 import { Dispatch } from 'redux'
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
-
-
-import { createRoleAsync, deleteRoleAsync, getAllRolesAsync, updateRoleAsync } from 'src/stores/apps/role/actions'
+// ** Axios
+import axios from 'axios'
+import { changePasswordMeAsync, registerAuthAsync, updateAuthMeAsync } from 'src/stores/auth/actions'
+import { createRoleAsync, deleteRoleAsync, getAllRolesAsync, updateRoleAsync } from 'src/stores/role/actions'
 
 interface DataParams {
   q: string
