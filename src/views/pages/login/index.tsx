@@ -69,7 +69,6 @@ const LoginPage: NextPage<TProps> = () => {
   const defaultValues: TDefaultValue = {
     email: 'localhost@gmail.com',
     password: '123456789@Ht'
-
   }
 
   const {
@@ -84,7 +83,6 @@ const LoginPage: NextPage<TProps> = () => {
   })
 
   const onSubmit = (data: { email: string; password: string }) => {
-    console.log({ data })
     if (!Object.keys(errors)?.length) {
       login({ ...data, rememberMe: isRemember }, err => {
         if (err?.response?.data?.typeError === 'INVALID') toast.error(t('The_email_or_password_wrong'))

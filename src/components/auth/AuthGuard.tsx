@@ -1,15 +1,13 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
-// ** React Imports
+// ** Next
 import { useRouter } from 'next/router'
+// ** React
 import { ReactNode, ReactElement, useEffect } from 'react'
-
-// @ auth
-import { useAuth } from 'src/hooks/useAuth'
-
-// @Configs
+// ** Config
 import { ACCESS_TOKEN, USER_DATA } from 'src/configs/auth'
-
-import { clearLocalStorage, clearTemporaryToken, getTemporaryToken } from 'src/helpers/storage'
+// ** Helpers
+import { clearLocalUserData, clearTemporaryToken, getTemporaryToken } from 'src/helpers/storage'
+// ** Hooks
+import { useAuth } from 'src/hooks/useAuth'
 
 interface AuthGuardProps {
   children: ReactNode
@@ -17,23 +15,24 @@ interface AuthGuardProps {
 }
 
 const AuthGuard = (props: AuthGuardProps) => {
+  // ** Props
   const { children, fallback } = props
-  // @ auth
+  // ** Auth
   const authContext = useAuth()
-  // @ router
+  // ** Router
   const router = useRouter()
 
-
   useEffect(() => {
-
-    // check page chưa render
+    const { temporaryToken } = getTemporaryToken()
     if (!router.isReady) {
       return
     }
-    const { temporaryToken } = getTemporaryToken()
-    if (authContext.user === null &&
+    if (
+      authContext.user === null &&
       !window.localStorage.getItem(ACCESS_TOKEN) &&
-      !window.localStorage.getItem(USER_DATA) && !temporaryToken) {
+      !window.localStorage.getItem(USER_DATA) &&
+      !temporaryToken
+    ) {
       if (router.asPath !== '/' && router.asPath !== '/login') {
         router.replace({
           pathname: '/login',
@@ -43,9 +42,8 @@ const AuthGuard = (props: AuthGuardProps) => {
         router.replace('/login')
       }
       authContext.setUser(null)
-      clearLocalStorage()
+      clearLocalUserData()
     }
-
   }, [router.route])
 
   useEffect(() => {
@@ -58,6 +56,7 @@ const AuthGuard = (props: AuthGuardProps) => {
       window.addEventListener('beforeunload', handleUnload)
     }
   }, [])
+
   if (authContext.loading || authContext.user === null) {
     return fallback
   }

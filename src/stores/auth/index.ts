@@ -1,24 +1,25 @@
 // ** Redux
-// import { Dispatch } from 'redux'
-import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
+import { createSlice } from '@reduxjs/toolkit'
+import { changePasswordMeAsync, registerAuthAsync, serviceName, updateAuthMeAsync } from 'src/stores/auth/actions'
+// ** Type
+import { UserDataType } from 'src/contexts/types'
 
-// ** Axios
-// import axios from 'axios'
-import { registerAuthAsync, updateAuthMeAsync, changePasswordMeAsync } from 'src/stores/auth/actions'
+type TInitialData = {
+  isLoading: boolean
+  isSuccess: boolean
+  isError: boolean
+  message: string
+  typeError: string
+  isSuccessUpdateMe: boolean
+  isErrorUpdateMe: boolean
+  messageUpdateMe: string
+  isSuccessChangePassword: boolean
+  isErrorChangePassword: boolean
+  messageChangePassword: string
+  userData: UserDataType | null
+}
 
-// interface DataParams {
-//   q: string
-//   role: string
-//   status: string
-//   currentPlan: string
-// }
-
-// interface Redux {
-//   getState: any
-//   dispatch: Dispatch<any>
-// }
-
-const initialState = {
+const initialState: TInitialData = {
   isLoading: false,
   isSuccess: true,
   isError: false,
@@ -29,11 +30,12 @@ const initialState = {
   messageUpdateMe: '',
   isSuccessChangePassword: true,
   isErrorChangePassword: false,
-  messageChangePassword: ''
+  messageChangePassword: '',
+  userData: null
 }
 
 export const authSlice = createSlice({
-  name: 'auth',
+  name: serviceName,
   initialState,
   reducers: {
     resetInitialState: state => {
@@ -79,6 +81,7 @@ export const authSlice = createSlice({
       state.isErrorUpdateMe = !action.payload?.data?.email
       state.messageUpdateMe = action.payload?.message
       state.typeError = action.payload?.typeError
+      state.userData = action.payload.data
     })
     builder.addCase(updateAuthMeAsync.rejected, (state, action) => {
       state.isLoading = false
@@ -86,6 +89,7 @@ export const authSlice = createSlice({
       state.isSuccessUpdateMe = false
       state.isErrorUpdateMe = false
       state.messageUpdateMe = ''
+      state.userData = null
     })
     // ** change password me
     builder.addCase(changePasswordMeAsync.pending, (state, action) => {

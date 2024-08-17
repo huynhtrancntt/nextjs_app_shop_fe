@@ -5,7 +5,31 @@ export const API_ENDPOINT = {
     INDEX: `${BASE_URL}/auth`,
     AUTH_ME: `${BASE_URL}/auth/me`
   },
-  ROLE: {
-    INDEX: `${BASE_URL}/roles`
+  SYSTEM: {
+    ROLE: {
+      INDEX: `${BASE_URL}/roles`
+    },
+    USER: {
+      INDEX: `${BASE_URL}/users`
+    }
+  },
+  SETTING: {
+    CITY: {
+      INDEX: `${BASE_URL}/city`
+    },
+    DELIVERY_TYPE: {
+      INDEX: `${BASE_URL}/delivery-type`
+    },
+    PAYMENT_TYPE: {
+      INDEX: `${BASE_URL}/payment-type`
+    }
+  },
+  MANAGE_PRODUCT: {
+    PRODUCT_TYPE: {
+      INDEX: `${BASE_URL}/product-types`
+    },
+    PRODUCT: {
+      INDEX: `${BASE_URL}/products`
+    }
   }
 }

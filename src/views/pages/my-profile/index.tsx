@@ -27,7 +27,7 @@ import { useTranslation } from 'react-i18next'
 // ** services
 import { getAuthMe } from 'src/services/auth'
 import { getAllRoles } from 'src/services/role'
-// import { getAllCities } from 'src/services/city'
+import { getAllCities } from 'src/services/city'
 
 // ** Utils
 import { convertBase64, separationFullName, toFullName } from 'src/utils'
@@ -146,17 +146,17 @@ const MyProfilePage: NextPage<TProps> = () => {
 
   const fetchAllCities = async () => {
     setLoading(true)
-    // await getAllCities({ params: { limit: -1, page: -1 } })
-    //   .then(res => {
-    //     const data = res?.data.cities
-    //     if (data) {
-    //       setOptionCities(data?.map((item: { name: string; _id: string }) => ({ label: item.name, value: item._id })))
-    //     }
-    //     setLoading(false)
-    //   })
-    //   .catch(e => {
-    //     setLoading(false)
-    //   })
+    await getAllCities({ params: { limit: -1, page: -1 } })
+      .then(res => {
+        const data = res?.data.cities
+        if (data) {
+          setOptionCities(data?.map((item: { name: string; _id: string }) => ({ label: item.name, value: item._id })))
+        }
+        setLoading(false)
+      })
+      .catch(e => {
+        setLoading(false)
+      })
   }
 
   useEffect(() => {

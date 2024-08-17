@@ -11,7 +11,7 @@ import { loginAuth, logoutAuth } from 'src/services/auth'
 // ** Config
 import { API_ENDPOINT } from 'src/configs/api'
 // ** Helper
-import { clearLocalStorage, setLocalStorage, setTemporaryToken } from 'src/helpers/storage'
+import { clearLocalUserData, setLocalUserData, setTemporaryToken } from 'src/helpers/storage'
 // ** Axios
 import instanceAxios from 'src/helpers/axios'
 // ** Translate
@@ -56,7 +56,7 @@ const AuthProvider = ({ children }: Props) => {
             setUser({ ...response.data.data })
           })
           .catch(() => {
-            clearLocalStorage()
+            clearLocalUserData()
             setUser(null)
             setLoading(false)
             if (!router.pathname.includes('login')) {
@@ -74,7 +74,7 @@ const AuthProvider = ({ children }: Props) => {
     loginAuth({ email: params.email, password: params.password })
       .then(async response => {
         if (params.rememberMe) {
-          setLocalStorage(JSON.stringify(response.data.user), response.data.access_token, response.data.refresh_token)
+          setLocalUserData(JSON.stringify(response.data.user), response.data.access_token, response.data.refresh_token)
         } else {
           setTemporaryToken(response.data.access_token)
         }
@@ -91,7 +91,7 @@ const AuthProvider = ({ children }: Props) => {
   const handleLogout = () => {
     logoutAuth().then(res => {
       setUser(null)
-      clearLocalStorage()
+      clearLocalUserData()
       router.push('/login')
     })
   }

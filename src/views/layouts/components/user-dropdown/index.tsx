@@ -1,27 +1,39 @@
 // ** React
-import React from 'react'
+import React, { useEffect } from 'react'
+
 // ** Next
 import Image from 'next/image'
 import { useRouter } from 'next/router'
-// ** Mui
+
+// ** Mui Imports
 import Box from '@mui/material/Box'
 import Avatar from '@mui/material/Avatar'
 import Menu from '@mui/material/Menu'
 import MenuItem from '@mui/material/MenuItem'
+import ListItemIcon from '@mui/material/ListItemIcon'
 import Divider from '@mui/material/Divider'
 import IconButton from '@mui/material/IconButton'
 import Tooltip from '@mui/material/Tooltip'
 import { Badge, Typography, styled } from '@mui/material'
+
 // ** Components
 import Icon from 'src/components/Icon'
+
 // ** Hooks
 import { useAuth } from 'src/hooks/useAuth'
+
 // ** Translate
 import { useTranslation } from 'react-i18next'
-// ** Config
+
+// ** config
 import { ROUTE_CONFIG } from 'src/configs/route'
+
 // ** Utils
 import { toFullName } from 'src/utils'
+
+// ** Redux
+import { useSelector } from 'react-redux'
+import { RootState } from 'src/stores'
 
 type TProps = {}
 
@@ -57,28 +69,47 @@ const StyledBadge = styled(Badge)(({ theme }) => ({
 const UserDropdown = (props: TProps) => {
   // ** Translation
   const { t, i18n } = useTranslation()
+
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null)
-  const { user, logout } = useAuth()
+
+  const { user, logout, setUser } = useAuth()
+
+  // ** Redux
+  const { userData } = useSelector((state: RootState) => state.auth)
+  const permissionUser = user?.role?.permissions ?? []
+
   const open = Boolean(anchorEl)
+
   const router = useRouter()
+
   const handleClick = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget)
   }
+
   const handleClose = () => {
     setAnchorEl(null)
   }
+
   const handleNavigateMyProfile = () => {
-    router.push(ROUTE_CONFIG.My_profile)
+    router.push(ROUTE_CONFIG.MY_PROFILE)
     handleClose()
   }
+
   const handleNavigateChangePassword = () => {
     router.push(ROUTE_CONFIG.CHANGE_PASSWORD)
     handleClose()
   }
+
   const handleNavigateManageSystem = () => {
     router.push(ROUTE_CONFIG.DASHBOARD)
     handleClose()
   }
+
+  useEffect(() => {
+    if (userData) {
+      setUser({ ...userData })
+    }
+  }, [userData])
 
   return (
     <React.Fragment>
@@ -177,12 +208,14 @@ const UserDropdown = (props: TProps) => {
           </Box>
         </Box>
         <Divider />
-        <MenuItem onClick={handleNavigateManageSystem}>
-          <Avatar>
-            <Icon icon='arcticons:phone-manager' />
-          </Avatar>{' '}
-          {t('Manage_system')}
-        </MenuItem>
+        {permissionUser.length > 0 && (
+          <MenuItem onClick={handleNavigateManageSystem}>
+            <Avatar>
+              <Icon icon='arcticons:phone-manager' />
+            </Avatar>{' '}
+            {t('Manage_system')}
+          </MenuItem>
+        )}
         <MenuItem onClick={handleNavigateMyProfile}>
           <Avatar>
             <Icon icon='ph:user-thin' />

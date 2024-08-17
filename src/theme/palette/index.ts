@@ -1,6 +1,7 @@
 // ** Type Imports
 import { Palette } from '@mui/material'
 import { Skin } from 'src/types/layouts'
+import { hexToRGBA } from 'src/utils/hex-to-rgba'
 
 const DefaultPalette = (mode: Palette['mode'], skin: Skin): Palette => {
   // ** Vars
@@ -30,7 +31,8 @@ const DefaultPalette = (mode: Palette['mode'], skin: Skin): Palette => {
       bodyBg: mode === 'light' ? '#F8F7FA' : '#25293C', // Same as palette.background.default but doesn't consider bordered skin
       trackBg: mode === 'light' ? '#F1F0F2' : '#363B54',
       avatarBg: mode === 'light' ? '#DBDADE' : '#4A5072',
-      tableHeaderBg: mode === 'light' ? '#F6F6F7' : '#4A5072'
+      tableHeaderBg: mode === 'light' ? '#F6F6F7' : '#4A5072',
+      borderColor: `${hexToRGBA(mainColor, 0.16)}`
     },
     mode: mode,
     common: {

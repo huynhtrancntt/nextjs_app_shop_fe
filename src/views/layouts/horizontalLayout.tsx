@@ -2,6 +2,7 @@
 import * as React from 'react'
 // ** Next
 import { NextPage } from 'next'
+import Link from 'next/link'
 // ** Mui
 import { styled } from '@mui/material/styles'
 import MuiAppBar, { AppBarProps as MuiAppBarProps } from '@mui/material/AppBar'
@@ -79,8 +80,14 @@ const HorizontalLayout: NextPage<TProps> = ({ open, toggleDrawer, isHideMenu }) 
             <IconifyIcon icon='ic:round-menu' />
           </IconButton>
         )}
-        <Typography component='h1' variant='h6' color='inherit' noWrap sx={{ flexGrow: 1 }}>
-          Dashboard
+        <Typography
+          component='h1'
+          variant='h6'
+          color='primary'
+          noWrap
+          sx={{ flexGrow: 1, fontWeight: '600', cursor: 'pointer' }}
+        >
+          <Link href={ROUTE_CONFIG.HOME}>E-Commerce</Link>
         </Typography>
         <LanguageDropdown />
         <ModeToggle />

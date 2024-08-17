@@ -11,7 +11,7 @@ import Toolbar from '@mui/material/Toolbar'
 import Container from '@mui/material/Container'
 
 // ** views
-import HorizontalLayout from 'src/views/layouts/horizontalLayout'
+import HorizontalLayout from 'src/views/layouts/HorizontalLayout'
 
 import { useTheme } from '@mui/material'
 
@@ -25,7 +25,7 @@ const LayoutNotApp: NextPage<TProps> = ({ children }) => {
   return (
     <Box sx={{ display: 'flex' }}>
       <CssBaseline />
-      <HorizontalLayout toggleDrawer={() => { }} open={false} isHideMenu />
+      <HorizontalLayout toggleDrawer={() => {}} open={false} isHideMenu />
       <Box
         component='main'
         sx={{
