@@ -1,11 +1,11 @@
 import axios from 'axios'
 import { BASE_URL, API_ENDPOINT } from 'src/configs/api'
 import {
-  clearLocalStorage,
+  clearLocalUserData,
   clearTemporaryToken,
-  getLocalStorage,
+  getLocalUserData,
   getTemporaryToken,
-  setLocalStorage
+  setLocalUserData
 } from '../storage'
 import { jwtDecode } from 'jwt-decode'
 import { FC } from 'react'
@@ -27,7 +27,7 @@ const handleRedirectLogin = (router: NextRouter, setUser: (data: UserDataType | 
     router.replace('/login')
   }
   setUser(null)
-  clearLocalStorage()
+  clearLocalUserData()
   clearTemporaryToken()
 }
 
@@ -38,7 +38,7 @@ const AxiosInterceptor: FC<TAxiosInterceptor> = ({ children }) => {
   const { setUser, user } = useAuth()
 
   instanceAxios.interceptors.request.use(async config => {
-    const { accessToken, refreshToken } = getLocalStorage()
+    const { accessToken, refreshToken } = getLocalUserData()
     const { temporaryToken } = getTemporaryToken()
 
     if (accessToken || temporaryToken) {
@@ -69,7 +69,7 @@ const AxiosInterceptor: FC<TAxiosInterceptor> = ({ children }) => {
                 if (newAccessToken) {
                   config.headers['Authorization'] = `Bearer ${newAccessToken}`
                   if (accessToken) {
-                    setLocalStorage(JSON.stringify(user), newAccessToken, refreshToken)
+                    setLocalUserData(JSON.stringify(user), newAccessToken, refreshToken)
                   }
                 } else {
                   handleRedirectLogin(router, setUser)

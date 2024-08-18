@@ -1,22 +1,15 @@
-// ** Redux
+// ** Redux Imports
 import { Dispatch } from 'redux'
-import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
-// ** Axios
-import axios from 'axios'
-import { changePasswordMeAsync, registerAuthAsync, updateAuthMeAsync } from 'src/stores/auth/actions'
-import { createRoleAsync, deleteRoleAsync, getAllRolesAsync, updateRoleAsync } from 'src/stores/role/actions'
+import { createSlice } from '@reduxjs/toolkit'
 
-interface DataParams {
-  q: string
-  role: string
-  status: string
-  currentPlan: string
-}
-
-interface Redux {
-  getState: any
-  dispatch: Dispatch<any>
-}
+// ** Axios Imports
+import {
+  createRoleAsync,
+  deleteRoleAsync,
+  getAllRolesAsync,
+  serviceName,
+  updateRoleAsync
+} from 'src/stores/role/actions'
 
 const initialState = {
   isLoading: false,
@@ -37,7 +30,7 @@ const initialState = {
 }
 
 export const roleSlice = createSlice({
-  name: 'auth',
+  name: serviceName,
   initialState,
   reducers: {
     resetInitialState: state => {
@@ -61,8 +54,8 @@ export const roleSlice = createSlice({
     })
     builder.addCase(getAllRolesAsync.fulfilled, (state, action) => {
       state.isLoading = false
-      state.roles.data = action.payload.data.roles
-      state.roles.total = action.payload.data.totalCount
+      state.roles.data = action.payload?.data?.roles
+      state.roles.total = action.payload?.data?.totalCount
     })
     builder.addCase(getAllRolesAsync.rejected, (state, action) => {
       state.isLoading = false

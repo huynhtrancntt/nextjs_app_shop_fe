@@ -1,13 +1,13 @@
 import { ACCESS_TOKEN, REFRESH_TOKEN, TEMPORARY_TOKEN, USER_DATA } from 'src/configs/auth'
 
-export const setLocalStorage = (userData: string, accessToken: string, refreshToken: string) => {
+export const setLocalUserData = (userData: string, accessToken: string, refreshToken: string) => {
   if (typeof window !== 'undefined') {
     window.localStorage.setItem(USER_DATA, userData)
     window.localStorage.setItem(ACCESS_TOKEN, accessToken)
     window.localStorage.setItem(REFRESH_TOKEN, refreshToken)
   }
 }
-export const getLocalStorage = () => {
+export const getLocalUserData = () => {
   if (typeof window !== 'undefined') {
     return {
       userData: window.localStorage.getItem(USER_DATA),
@@ -22,7 +22,7 @@ export const getLocalStorage = () => {
     refreshToken: ''
   }
 }
-export const clearLocalStorage = () => {
+export const clearLocalUserData = () => {
   if (typeof window !== 'undefined') {
     window.localStorage.removeItem(USER_DATA)
     window.localStorage.removeItem(ACCESS_TOKEN)

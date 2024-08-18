@@ -3,7 +3,7 @@
 import Typography from '@mui/material/Typography'
 import Box from '@mui/material/Box'
 import { ReactNode } from 'react'
-import BlankLayout from 'src/views/layouts/blankLayout'
+import BlankLayout from 'src/views/layouts/BlankLayout'
 
 const Error404 = () => {
   return (

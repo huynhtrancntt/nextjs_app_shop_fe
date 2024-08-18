@@ -16,7 +16,7 @@ interface TCustomSelect extends BaseSelectProps {
 
 const StyledSelect = styled(Select)<BaseSelectProps>(({ theme }) => ({
   '& .MuiSelect-select.MuiSelect-outlined.MuiInputBase-input': {
-    padding: '4px 8px 8px 10px !important',
+    padding: '8px 8px 8px 8px !important',
     height: '38px',
     boxSizing: 'border-box'
   },
@@ -27,8 +27,9 @@ const StyledSelect = styled(Select)<BaseSelectProps>(({ theme }) => ({
     top: 'calc(50% - .6em) !important'
   },
   '.MuiOutlinedInput-notchedOutline': {
-    top: '-4px !important',
-    bottom: '2px !important'
+    top: '-0px !important',
+    bottom: '2px !important',
+    height: '38px'
   }
 }))
 

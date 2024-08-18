@@ -15,11 +15,11 @@ interface TInputSearch {
 const Search = styled('div')(({ theme }) => ({
   position: 'relative',
   borderRadius: theme.shape.borderRadius,
-  backgroundColor: theme.palette.common.white,
+  backgroundColor: theme.palette.background.paper,
   marginLeft: '0 !important',
   height: '38px',
   width: '100%',
-  border: `1px solid ${theme.palette.customColors.borderColor}`,
+  //border: `1px solid ${theme.palette.customColors.borderColor}`,
   [theme.breakpoints.up('sm')]: {
     marginLeft: theme.spacing(1),
     width: 'auto'
