@@ -1,6 +1,6 @@
 import Typography from '@mui/material/Typography'
 import { ReactNode } from 'react'
-import BlankLayout from 'src/views/layouts/BlankLayout'
+import BlankLayout from 'src/views/layouts/blankLayout'
 
 const Error401 = () => {
   return (

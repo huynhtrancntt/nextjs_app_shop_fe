@@ -3,7 +3,7 @@ import { NextPage } from 'next'
 import { ReactNode } from 'react'
 
 // ** views
-import LayoutNotApp from 'src/views/layouts/LayoutNotApp'
+import LayoutNotApp from 'src/views/layouts/layoutNotApp'
 import DetailsProductPage from 'src/views/pages/product/DetailsProduct'
 
 type TProps = {}

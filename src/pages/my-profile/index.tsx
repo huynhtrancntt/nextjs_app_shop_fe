@@ -4,7 +4,7 @@ import { ReactNode } from 'react'
 
 // ** views
 import MyProfilePage from 'src/views/pages/my-profile'
-import LayoutNotApp from 'src/views/layouts/LayoutNotApp'
+import LayoutNotApp from 'src/views/layouts/layoutNotApp'
 
 type TProps = {}
 

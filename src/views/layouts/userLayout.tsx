@@ -9,8 +9,8 @@ import Toolbar from '@mui/material/Toolbar'
 import Container from '@mui/material/Container'
 import { useTheme } from '@mui/material'
 // ** Views
-import HorizontalLayout from 'src/views/layouts/HorizontalLayout'
-import VerticalLayout from 'src/views/layouts/VerticalLayout'
+import HorizontalLayout from 'src/views/layouts/horizontalLayout'
+import VerticalLayout from 'src/views/layouts/verticalLayout'
 
 type TProps = {
   children: React.ReactNode

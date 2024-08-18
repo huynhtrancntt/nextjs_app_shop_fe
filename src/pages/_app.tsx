@@ -30,7 +30,7 @@ import FallbackSpinner from 'src/components/fall-back'
 import ReactHotToast from 'src/components/react-hot-toast'
 import ThemeComponent from 'src/theme/ThemeComponent'
 import NoGuard from 'src/components/auth/NoGuard'
-import UserLayout from 'src/views/layouts/UserLayout'
+import UserLayout from 'src/views/layouts/userLayout'
 // ** Hook
 import { useSettings } from 'src/hooks/useSettings'
 // ** Axios

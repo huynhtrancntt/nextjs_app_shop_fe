@@ -3,7 +3,7 @@ import { NextPage } from 'next'
 import { ReactNode } from 'react'
 
 // ** View
-import BlankLayout from 'src/views/layouts/BlankLayout'
+import BlankLayout from 'src/views/layouts/blankLayout'
 import RegisterPage from 'src/views/pages/register'
 
 type TProps = {}

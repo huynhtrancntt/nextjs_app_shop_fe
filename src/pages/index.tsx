@@ -2,7 +2,7 @@
 import Head from 'next/head'
 import { ReactNode } from 'react'
 // ** Layout
-import LayoutNotApp from 'src/views/layouts/LayoutNotApp'
+import LayoutNotApp from 'src/views/layouts/layoutNotApp'
 // ** Pages
 import HomePage from 'src/views/pages/home'
 
