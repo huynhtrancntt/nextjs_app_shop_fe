@@ -15,7 +15,7 @@ import { Settings } from 'src/contexts/SettingsContext'
 
 
 // ** User Theme Options
-import UserThemeOptions from 'src/views/layouts/userThemeOptions'
+import UserThemeOptions from 'src/views/layouts/UserThemeOptions'
 
 const themeOptions = (settings: Settings, overrideMode: PaletteMode): ThemeOptions => {
   // ** Vars
