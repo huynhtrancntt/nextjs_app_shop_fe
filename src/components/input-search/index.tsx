@@ -19,7 +19,7 @@ const Search = styled('div')(({ theme }) => ({
   marginLeft: '0 !important',
   height: '38px',
   width: '100%',
-  //border: `1px solid ${theme.palette.customColors.borderColor}`,
+  border: `1px solid ${theme.palette.customColors.borderColor}`,
   [theme.breakpoints.up('sm')]: {
     marginLeft: theme.spacing(1),
     width: 'auto'
