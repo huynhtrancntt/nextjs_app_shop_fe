@@ -141,7 +141,7 @@ const RecursiveListItems: NextPage<TListItems> = ({
                       color:
                         (activePath && item.path === activePath) || !!openItems[item.title] || isParentActive
                           ? `${theme.palette.customColors.lightPaperBg}`
-                          : `rgba(${theme.palette.customColors.main}, 0.78)`
+                          : `unset`
                     }}
                     icon={item.icon}
                   />
@@ -167,7 +167,7 @@ const RecursiveListItems: NextPage<TListItems> = ({
                         color:
                           !!openItems[item.title] || isParentActive
                             ? `${theme.palette.primary.main}`
-                            : `rgba(${theme.palette.customColors.main}, 0.78)`
+                            : `unset`
                       }}
                     />
                   ) : (
@@ -176,7 +176,7 @@ const RecursiveListItems: NextPage<TListItems> = ({
                       style={{
                         color: isParentActive
                           ? `${theme.palette.primary.main}`
-                          : `rgba(${theme.palette.customColors.main}, 0.78)`
+                          : `unset`
                       }}
                     />
                   )}
