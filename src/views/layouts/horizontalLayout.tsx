@@ -20,6 +20,7 @@ import { Button } from '@mui/material'
 import { useRouter } from 'next/router'
 // Config
 import { ROUTE_CONFIG } from 'src/configs/route'
+import CardProduct from './components/card-product'
 
 const drawerWidth: number = 240
 
@@ -91,6 +92,8 @@ const HorizontalLayout: NextPage<TProps> = ({ open, toggleDrawer, isHideMenu }) 
         </Typography>
         <LanguageDropdown />
         <ModeToggle />
+        {/* Giỏ Hàng */}
+        <CardProduct />
         {user ? (
           <UserDropdown />
         ) : (

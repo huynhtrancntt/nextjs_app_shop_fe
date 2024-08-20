@@ -1,5 +1,6 @@
 import htmlToDraft from 'html-to-draftjs'
 import { ContentState, EditorState } from 'draft-js'
+import { TItemOrderProduct } from 'src/types/order-product'
 
 export const toFullName = (lastName: string, middleName: string, firstName: string, language: string) => {
   if (language === 'vi') {
@@ -123,4 +124,41 @@ export const formatNumberToLocal = (value: string | number) => {
   } catch (error) {
     return value
   }
+}
+export const cloneDeep = (obj: any) => {
+
+  try {
+    return JSON.parse(JSON.stringify(obj))
+  } catch (error) {
+    return obj
+  }
+
+}
+
+export const convertAddProductToCart = (orderItems: TItemOrderProduct[], addItem: TItemOrderProduct) => {
+
+  try {
+    const cloneOrderItems = cloneDeep(orderItems)
+
+    const findIndex = cloneOrderItems.find((item: TItemOrderProduct) => item.product === addItem.product)
+
+    if (findIndex) {
+
+      findIndex.amount += addItem.amount
+
+    } else {
+      cloneOrderItems.push(addItem)
+    }
+
+    return cloneOrderItems
+
+  }
+
+  catch (error) {
+    console.log("error ", { error })
+
+    return orderItems;
+  }
+
+
 }
