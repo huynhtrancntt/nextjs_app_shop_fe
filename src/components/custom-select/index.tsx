@@ -29,8 +29,10 @@ const StyledSelect = styled(Select)<BaseSelectProps>(({ theme }) => ({
   '.MuiOutlinedInput-notchedOutline': {
     top: '-0px !important',
     bottom: '2px !important',
-    height: '38px'
-  }
+    height: '38px',
+    border: `1px solid ${theme.palette.customColors.borderColor}`
+    ,
+  },
 }))
 
 const CustomPlaceHolder = styled(InputLabel)<InputLabelProps>(({ theme }) => ({

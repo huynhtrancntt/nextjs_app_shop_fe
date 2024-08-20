@@ -141,7 +141,7 @@ const RecursiveListItems: NextPage<TListItems> = ({
                       color:
                         (activePath && item.path === activePath) || !!openItems[item.title] || isParentActive
                           ? `${theme.palette.customColors.lightPaperBg}`
-                          : `rgba(${theme.palette.customColors.main}, 0.78)`
+                          : `unset`
                     }}
                     icon={item.icon}
                   />
@@ -167,7 +167,7 @@ const RecursiveListItems: NextPage<TListItems> = ({
                         color:
                           !!openItems[item.title] || isParentActive
                             ? `${theme.palette.primary.main}`
-                            : `rgba(${theme.palette.customColors.main}, 0.78)`
+                            : `unset`
                       }}
                     />
                   ) : (
@@ -176,7 +176,7 @@ const RecursiveListItems: NextPage<TListItems> = ({
                       style={{
                         color: isParentActive
                           ? `${theme.palette.primary.main}`
-                          : `rgba(${theme.palette.customColors.main}, 0.78)`
+                          : `unset`
                       }}
                     />
                   )}
@@ -233,13 +233,28 @@ const ListVerticalLayout: NextPage<TProps> = ({ open }) => {
 
     return null
   }
+  const hasPermission = (item: any, permissionUser: string[]): boolean => {
 
-  const hasPermission = (item: any, permissionUser: string[]) => {
-    return permissionUser.includes(item.permission) || !item.permission
-  }
+
+    if (Array.isArray(item.permission)) {
+      // If item.permission is an array, check if any of the permissions match
+      const hasArrayPermission = item.permission.some((perm: string) => permissionUser.includes(perm));
+      //console.log(`Permission array match for ${item.title}:`, hasArrayPermission);
+
+      return hasArrayPermission;
+    }
+
+    // Single permission check or no permission required
+    const hasSinglePermission = permissionUser.includes(item.permission) || !item.permission;
+    //console.log(`Permission match for ${item.title}:`, hasSinglePermission);
+
+    return hasSinglePermission;
+  };
 
   const formatMenuByPermission = (menu: any[], permissionUser: string[]) => {
     if (menu) {
+
+
       return menu.filter(item => {
         if (hasPermission(item, permissionUser)) {
           if (item.childrens && item.childrens.length > 0) {

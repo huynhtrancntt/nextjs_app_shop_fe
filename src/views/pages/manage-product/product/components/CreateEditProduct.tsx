@@ -46,6 +46,7 @@ import CustomEditor from 'src/components/custom-editor'
 import { EditorState, convertToRaw } from 'draft-js'
 import draftToHtml from 'draftjs-to-html'
 import { getDetailsProduct } from 'src/services/product'
+import CustomSwitch from 'src/components/custom-switch'
 
 interface TCreateEditProduct {
   open: boolean
@@ -163,7 +164,7 @@ const CreateEditProduct = (props: TCreateEditProduct) => {
     slug: '',
     countInStock: '',
     price: '',
-    status: 0,
+    status: 1,
     discountEndDate: null,
     discountStartDate: null
   }
@@ -435,7 +436,7 @@ const CreateEditProduct = (props: TCreateEditProduct) => {
                                 </InputLabel>
                                 <FormControlLabel
                                   control={
-                                    <Switch
+                                    <CustomSwitch
                                       value={value}
                                       checked={Boolean(value)}
                                       onChange={e => {

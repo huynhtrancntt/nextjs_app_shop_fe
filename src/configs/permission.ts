@@ -10,6 +10,7 @@ export const PERMISSIONS: any = {
       DELETE: 'MANAGE_PRODUCT.PRODUCT.DELETE'
     },
     PRODUCT_TYPE: {
+      VIEW: 'MANAGE_PRODUCT.PRODUCT_TYPE.VIEW',
       CREATE: 'MANAGE_PRODUCT.PRODUCT_TYPE.CREATE',
       UPDATE: 'MANAGE_PRODUCT.PRODUCT_TYPE.UPDATE',
       DELETE: 'MANAGE_PRODUCT.PRODUCT_TYPE.DELETE'
@@ -85,7 +86,6 @@ export const LIST_DATA_PERMISSIONS: any = [
     isParent: false,
     value: 'PRODUCT_TYPE',
     parentValue: 'MANAGE_PRODUCT',
-    isHideView: true
   },
   { id: 4, name: 'System', isParent: true, value: 'SYSTEM' },
   {

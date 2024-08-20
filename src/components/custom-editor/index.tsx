@@ -18,7 +18,7 @@ const StyleWrapperEditor = styled(Box)<TStyleWrapperEditor>(({ theme, error }) =
   '.rdw-editor-wrapper': {
     borderRadius: 8,
     backgroundColor: 'transparent !important',
-    border: error ? `1px solid ${theme.palette.error.main}` : `1px solid rgba(${theme.palette.customColors.main}, 0.2)`
+    border: error ? `1px solid ${theme.palette.error.main}` : `1px solid ${theme.palette.customColors.borderColor}`
   },
   '.rdw-editor-toolbar': {
     border: 'none',
@@ -26,7 +26,7 @@ const StyleWrapperEditor = styled(Box)<TStyleWrapperEditor>(({ theme, error }) =
     borderTopRightRadius: 8
   },
   '.rdw-editor-main': {
-    borderTop: `1px solid rgba(${theme.palette.customColors.main}, 0.2)`,
+    borderTop: `1px solid ${theme.palette.customColors.borderColor}`,
     padding: '8px',
     minHeight: '200px',
     maxHeight: '200px',

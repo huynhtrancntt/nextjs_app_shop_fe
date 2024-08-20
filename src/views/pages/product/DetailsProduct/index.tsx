@@ -36,18 +36,13 @@ import { t } from 'i18next'
 import { useTranslation } from 'react-i18next'
 
 // ** services
-import { getAuthMe } from 'src/services/auth'
-import { getAllRoles } from 'src/services/role'
-import { getAllCities } from 'src/services/city'
+
 
 // ** Utils
 import { convertBase64, formatNumberToLocal, separationFullName, toFullName } from 'src/utils'
 
 // ** Redux
-import { updateAuthMeAsync } from 'src/stores/auth/actions'
-import { resetInitialState } from 'src/stores/auth'
-import { useDispatch, useSelector } from 'react-redux'
-import { AppDispatch, RootState } from 'src/stores'
+
 
 // ** component
 import FallbackSpinner from 'src/components/fall-back'
@@ -55,12 +50,12 @@ import FallbackSpinner from 'src/components/fall-back'
 // ** Other
 import toast from 'react-hot-toast'
 import Spinner from 'src/components/spinner'
-import CustomSelect from 'src/components/custom-select'
 import { getDetailsProductPublicBySlug } from 'src/services/product'
 import { useRouter } from 'next/router'
 import { TProduct } from 'src/types/product'
 import Image from 'next/image'
 import { hexToRGBA } from 'src/utils/hex-to-rgba'
+import { text } from 'node:stream/consumers'
 
 type TProps = {}
 
@@ -114,19 +109,14 @@ const DetailsProductPage: NextPage<TProps> = () => {
           sx={{ backgroundColor: theme.palette.background.paper, borderRadius: '15px', py: 5, px: 4 }}
         >
           <Box sx={{ height: '100%', width: '100%' }}>
-            <Grid container spacing={8}>
+            <Grid container spacing={12} >
               <Grid item md={5} xs={12}>
                 <Image
                   src={dataProduct?.image}
                   alt='banner'
                   width={0}
                   height={0}
-                  style={{
-                    height: '100%',
-                    width: '100%',
-                    objectFit: 'contain',
-                    borderRadius: '15px'
-                  }}
+                  style={{ width: '100%', height: 'auto' }}
                 />
               </Grid>
               <Grid item md={7} xs={12}>
