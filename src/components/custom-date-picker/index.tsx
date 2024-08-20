@@ -20,7 +20,7 @@ interface StyleDatePickerProps extends BoxProps {
 const StyleDatePicker = styled(Box)<StyleDatePickerProps>(({ theme, error }) => ({
   borderRadius: 8,
   backgroundColor: 'transparent !important',
-  border: error ? `1px solid ${theme.palette.error.main}` : `1px solid rgba(${theme.palette.customColors.main}, 0.2)`,
+  border: error ? `1px solid ${theme.palette.error.main}` : `1px solid ${theme.palette.customColors.borderColor}`,
   height: '38px',
   padding: '8px',
   position: 'relative',
@@ -38,7 +38,7 @@ const StyleDatePicker = styled(Box)<StyleDatePickerProps>(({ theme, error }) => 
     input: {
       border: 'none',
       outline: 'none',
-      color: `rgba(${theme.palette.customColors.main}, 0.42)`,
+      color: `${theme.palette.customColors.main}, 0.42)`,
       backgroundColor: 'transparent',
       width: '100%'
     }
