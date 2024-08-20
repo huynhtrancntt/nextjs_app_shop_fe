@@ -47,6 +47,7 @@ const input = () => {
         })
       }
     },
+    // eslint-disable-next-line lines-around-comment
     // MuiOutlinedInput: {
     //    styleOverrides: {
     //       root: ({ theme }: OwnerStateThemeType) => ({

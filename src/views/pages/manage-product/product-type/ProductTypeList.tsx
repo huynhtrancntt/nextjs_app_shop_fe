@@ -44,6 +44,7 @@ import { PAGE_SIZE_OPTION } from 'src/configs/gridConfig'
 
 // ** Utils
 import { formatDate } from 'src/utils'
+import IconifyIcon from 'src/components/Icon'
 
 type TProps = {}
 
@@ -202,24 +203,31 @@ const ProductTypeListPage: NextPage<TProps> = () => {
 
         return (
           <>
-            <GridEdit
-              disabled={!UPDATE}
-              onClick={() =>
-                setOpenCreateEdit({
-                  open: true,
-                  id: String(params.id)
-                })
-              }
-            />
-            <GridDelete
-              disabled={!DELETE}
-              onClick={() =>
-                setOpenDeleteProductType({
-                  open: true,
-                  id: String(params.id)
-                })
-              }
-            />
+            {UPDATE && (
+              <GridEdit
+                disabled={!UPDATE}
+                onClick={() =>
+                  setOpenCreateEdit({
+                    open: true,
+                    id: String(params.id)
+                  })
+                }
+              />
+            )}
+            {DELETE && (
+              <GridDelete
+                disabled={!DELETE}
+                onClick={() =>
+                  setOpenDeleteProductType({
+                    open: true,
+                    id: String(params.id)
+                  })
+                }
+              />
+            )}
+            {!UPDATE && !DELETE && (
+              <IconifyIcon icon='material-symbols-light:lock-outline' fontSize={30} />
+            )}
           </>
         )
       }
@@ -335,15 +343,18 @@ const ProductTypeListPage: NextPage<TProps> = () => {
               <Box sx={{ width: '200px' }}>
                 <InputSearch value={searchBy} onChange={(value: string) => setSearchBy(value)} />
               </Box>
-              <GridCreate
-                disabled={!CREATE}
-                onClick={() => {
-                  setOpenCreateEdit({
-                    open: true,
-                    id: ''
-                  })
-                }}
-              />
+              {CREATE && (
+                <GridCreate
+                  disabled={!CREATE}
+                  onClick={() => {
+                    setOpenCreateEdit({
+                      open: true,
+                      id: ''
+                    })
+                  }}
+                />
+              )}
+
             </Box>
           )}
           {selectedRow?.length > 0 && (
