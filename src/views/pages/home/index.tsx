@@ -2,7 +2,7 @@
 import { NextPage } from 'next'
 
 // ** React
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
 // ** Mui
@@ -49,6 +49,9 @@ const HomePage: NextPage<TProps> = () => {
   const [searchBy, setSearchBy] = useState('')
   const [productTypeSelected, setProductTypeSelected] = useState('')
   const [reviewSelected, setReviewSelected] = useState('')
+
+  const firstRender = useRef<boolean>(false)
+
 
   const handleChange = (event: React.SyntheticEvent, newValue: string) => {
     setProductTypeSelected(newValue)
@@ -102,6 +105,7 @@ const HomePage: NextPage<TProps> = () => {
         if (data) {
           setOptionTypes(data?.map((item: { name: string; _id: string }) => ({ label: item.name, value: item._id })))
           setProductTypeSelected(data?.[0]?._id)
+          firstRender.current = true
         }
         setLoading(false)
       })
@@ -111,17 +115,25 @@ const HomePage: NextPage<TProps> = () => {
   }
 
   useEffect(() => {
-    handleGetListProducts()
+    fetchAllTypes()
+  }, [])
+
+  useEffect(() => {
+    if (firstRender.current) {
+      handleGetListProducts()
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [sortBy, searchBy, page, pageSize, filterBy])
 
   useEffect(() => {
-    setFilterBy({ productType: productTypeSelected, minStar: reviewSelected })
+    if (firstRender.current) {
+      setFilterBy({ productType: productTypeSelected, minStar: reviewSelected })
+    }
+
+
   }, [productTypeSelected, reviewSelected])
 
-  useEffect(() => {
-    fetchAllTypes()
-  }, [])
+
 
   return (
     <>

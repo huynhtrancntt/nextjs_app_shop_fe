@@ -26,6 +26,11 @@ import { useDispatch, useSelector } from 'react-redux'
 import { AppDispatch, RootState } from 'src/stores'
 import { addProductToCart } from 'src/stores/order-product'
 
+
+// Storage
+import { getLocalProductToCart, setLocalProductToCart } from 'src/helpers/storage'
+import { useAuth } from 'src/hooks/useAuth'
+
 interface TCardProduct {
   item: TProduct
 }
@@ -46,6 +51,7 @@ const CardProduct = (props: TCardProduct) => {
   const { t } = useTranslation()
   const theme = useTheme()
   const router = useRouter()
+  const { user } = useAuth()
 
   // ** Redux
   const dispatch: AppDispatch = useDispatch()
@@ -59,6 +65,10 @@ const CardProduct = (props: TCardProduct) => {
 
   const handleAddToCart = (item: TProduct) => {
 
+    const productCart = getLocalProductToCart()
+
+    const parseProductCart = productCart ? JSON.parse(productCart) : {}
+
     const addToCard = {
       name: item.name,
       amount: 1,
@@ -67,14 +77,19 @@ const CardProduct = (props: TCardProduct) => {
       discount: item.discount,
       product: item._id
     }
+    const listOrderItems = convertAddProductToCart(orderItems, addToCard)
     // add to cart
     dispatch(
       addProductToCart({
-        orderItems: convertAddProductToCart(orderItems, addToCard)
+        orderItems: listOrderItems
       })
     )
+    if (user?._id) {
+      setLocalProductToCart({ ...parseProductCart, [user?._id]: listOrderItems })
+    }
 
   }
+
 
   return (
     <StyleCard sx={{ width: '100%' }}>

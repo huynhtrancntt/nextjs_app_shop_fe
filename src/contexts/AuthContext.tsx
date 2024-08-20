@@ -1,5 +1,5 @@
 // ** React
-import { createContext, useEffect, useState, ReactNode } from 'react'
+import { createContext, useEffect, useState, ReactNode, use } from 'react'
 // ** Next
 import { useRouter } from 'next/router'
 // ** Config
@@ -18,6 +18,9 @@ import instanceAxios from 'src/helpers/axios'
 import { useTranslation } from 'react-i18next'
 // ** Others
 import toast from 'react-hot-toast'
+import { useDispatch } from 'react-redux'
+import { AppDispatch } from 'src/stores'
+import { addProductToCart } from 'src/stores/order-product'
 
 // ** Defaults
 const defaultProvider: AuthValuesType = {
@@ -43,6 +46,8 @@ const AuthProvider = ({ children }: Props) => {
   const { t } = useTranslation()
   // ** Hooks
   const router = useRouter()
+
+  const dispatch: AppDispatch = useDispatch()
 
   useEffect(() => {
     const initAuth = async (): Promise<void> => {
@@ -92,7 +97,12 @@ const AuthProvider = ({ children }: Props) => {
     logoutAuth().then(res => {
       setUser(null)
       clearLocalUserData()
-      router.push('/login')
+      dispatch(
+        addProductToCart({
+          orderItems: []
+        })
+      )
+      //router.push('/login')
     })
   }
   const values = {
