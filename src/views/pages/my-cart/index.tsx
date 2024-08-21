@@ -2,10 +2,10 @@
 import { NextPage } from 'next'
 
 // ** React
-import { useEffect, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 
 // ** Mui
-import { Avatar, Box, Button, Checkbox, FormHelperText, Grid, IconButton, InputLabel, Typography, useTheme } from '@mui/material'
+import { Avatar, Box, Button, Checkbox, FormHelperText, Grid, IconButton, InputLabel, Tooltip, Typography, useTheme } from '@mui/material'
 
 // ** Components
 import CustomTextField from 'src/components/text-field'
@@ -30,7 +30,7 @@ import { getAllRoles } from 'src/services/role'
 import { getAllCities } from 'src/services/city'
 
 // ** Utils
-import { convertBase64, formatNumberToLocal, separationFullName, toFullName } from 'src/utils'
+import { cloneDeep, convertBase64, convertUpdateProductToCart, formatNumberToLocal, separationFullName, toFullName } from 'src/utils'
 
 // ** Redux
 
@@ -41,6 +41,14 @@ import { AppDispatch, RootState } from 'src/stores'
 import { TItemOrderProduct } from 'src/types/order-product'
 import { hexToRGBA } from 'src/utils/hex-to-rgba'
 import { Divider } from '@mui/material'
+import { decreaseProductToCart, increaseProductToCart, updateProductToCart } from 'src/stores/order-product'
+import { TProduct } from 'src/types/product'
+import { getLocalProductToCart, setLocalProductToCart } from 'src/helpers/storage'
+import { useAuth } from 'src/hooks/useAuth'
+import toast from 'react-hot-toast'
+import { addProductToCart, removeProductFromCart } from 'src/utils/addToCart'
+
+
 
 type TProps = {}
 
@@ -56,24 +64,138 @@ type TDefaultValue = {
 const MyCartPage: NextPage<TProps> = () => {
   // State
   const [loading, setLoading] = useState(false)
-  const [avatar, setAvatar] = useState('')
-  const [optionRoles, setOptionRoles] = useState<{ label: string; value: string }[]>([])
-  const [isDisabledRole, setIsDisabledRole] = useState(false)
-  const [optionCities, setOptionCities] = useState<{ label: string; value: string }[]>([])
 
+
+  const [selectRows, setSelectRows] = useState<string[]>([])
   // ** Hooks
   const { i18n } = useTranslation()
+  const { user } = useAuth()
 
   // ** theme
   const theme = useTheme()
 
   // ** redux
   const dispatch: AppDispatch = useDispatch()
+
   const { orderItems } = useSelector(
     (state: RootState) => state.orderProduct
   )
 
-  console.log("orderItems", orderItems)
+  const memoListAllProductIds = useMemo(() => {
+    const listId = orderItems.map((item: TItemOrderProduct) => item.product)
+
+    return listId
+  }, [orderItems])
+
+
+
+  const handleChangeAmountCart = (item: TItemOrderProduct, quantity: number) => {
+
+    if (user?._id) {
+      // add to cart
+
+      addProductToCart(
+        user?._id,
+        item,
+        orderItems,
+        quantity,
+        dispatch
+      );
+      toast.success(t('Update_to_cart_success'))
+
+    } else {
+      toast.error(t('Please_login_first'))
+    }
+
+
+  }
+
+  const handleRemoveCart = (item: TItemOrderProduct) => {
+
+    if (user?._id) {
+      removeProductFromCart(
+        user?._id,
+        [item.product], // Pass the product ID in an array
+        orderItems,
+        dispatch
+      );
+      toast.success(t('Remove_to_cart_success'))
+    } else {
+
+      toast.error(t('Please_login_first'))
+    }
+    // removeProductFromCart(item, dispatch, user?._id, orderItems, setSelectRows, selectRows)
+    // const productCart = getLocalProductToCart()
+
+    // const parseProductCart = productCart ? JSON.parse(productCart) : {}
+
+    // const cloneOrderItems = cloneDeep(orderItems)
+
+    // const filteredItems = cloneOrderItems.filter((i: TItemOrderProduct) => i.product !== item.product)
+
+    // if (user?._id) {
+    //   dispatch(
+    //     updateProductToCart({
+    //       orderItems: filteredItems
+    //     })
+    //   )
+    //   setLocalProductToCart({ ...parseProductCart, [user?._id]: filteredItems })
+    // }
+
+  }
+
+  const handleRemoveCartAll = () => {
+
+    if (user?._id) {
+      removeProductFromCart(
+        user?._id,
+        selectRows, // Pass the product ID in an array
+        orderItems,
+        dispatch
+      );
+      toast.success(t('Remove_to_cart_success'))
+    } else {
+
+      toast.error(t('Please_login_first'))
+    }
+    // const productCart = getLocalProductToCart()
+
+    // const parseProductCart = productCart ? JSON.parse(productCart) : {}
+
+    // const cloneOrderItems = cloneDeep(orderItems)
+
+    // const filteredItems = cloneOrderItems.filter((i: TItemOrderProduct) => !selectRows.includes(i.product))
+
+    // if (user?._id) {
+    //   dispatch(
+    //     updateProductToCart({
+    //       orderItems: filteredItems
+    //     })
+    //   )
+    //   setLocalProductToCart({ ...parseProductCart, [user?._id]: filteredItems })
+    // }
+  }
+
+  const handleOnChangeCheckBox = (value: string) => {
+
+    const isChecked = selectRows.includes(value)
+    if (isChecked) {
+      const filtered = selectRows.filter(item => item !== value)
+      setSelectRows(filtered)
+    } else {
+      setSelectRows([...selectRows, value])
+    }
+  }
+
+  const handChangeCheckAll = () => {
+
+    const isChecked = memoListAllProductIds.every(item => selectRows.includes(item))
+    if (isChecked) {
+      setSelectRows([])
+    } else {
+      setSelectRows(memoListAllProductIds)
+    }
+  }
 
   return (
     <>
@@ -90,26 +212,46 @@ const MyCartPage: NextPage<TProps> = () => {
                 backgroundColor: theme.palette.background.paper, borderRadius: '15px'
               }}
             >
+              {orderItems?.length > 0 &&
+                <>
+                  <Box sx={{
+                    display: 'flex',
+                    width: '100%',
+                    alignItems: 'center',
+                    gap: '8px',
+                    mb: '10px'
+                  }}>
 
-              <Box sx={{
-                display: 'flex',
-                width: '100%',
-                alignItems: 'center',
-                gap: '8px',
-                mb: '10px'
-              }}>
-                <Box sx={{ flexBasis: '5%' }}></Box>
-                <Box sx={{ flexBasis: '10%' }}>  {t('Cart_product_image')}</Box>
-                <Typography sx={{ flexBasis: '40%' }}>
-                  {t('Cart_product_name')}
-                </Typography>
-                <Box sx={{ flexBasis: '25%' }}>  {t('Cart_product_price')}</Box>
-                <Box sx={{ flexBasis: '15%' }}>  {t('Cart_product_quantity')}</Box>
-                <Box sx={{ flexBasis: '15%' }}>  {t('Cart_product_total')}</Box>
-                <Box sx={{ flexBasis: '5%' }}>
-                </Box>
-              </Box>
-              <Divider />
+                    <Box sx={{ flexBasis: '5%' }}>
+                      <Checkbox
+                        checked={memoListAllProductIds.every(item => selectRows.includes(item))}
+                        onChange={() => handChangeCheckAll()}
+                      />
+                    </Box>
+                    <Box sx={{ flexBasis: '10%' }}>  {t('Cart_product_image')}</Box>
+                    <Typography sx={{ flexBasis: '40%' }}>
+                      {t('Cart_product_name')}
+                    </Typography>
+                    <Box sx={{ flexBasis: '25%' }}>  {t('Cart_product_price')}</Box>
+                    <Box sx={{ flexBasis: '15%' }}>  {t('Cart_product_quantity')}</Box>
+                    <Box sx={{ flexBasis: '15%' }}>  {t('Cart_product_total')}</Box>
+                    <Box sx={{ flexBasis: '5%' }}>
+                      <Tooltip title={t('Cart_product_remove')}>
+                        <IconButton
+                          onClick={() => handleRemoveCartAll()}
+                          sx={{ color: `${theme.palette.error.main}` }}
+                          disabled={!selectRows.length}
+                        >
+                          <Icon icon='mdi:delete-outline'></Icon>
+                        </IconButton>
+                      </Tooltip>
+                    </Box>
+
+
+                  </Box>
+                  <Divider />
+                </>
+              }
               <Box sx={{ width: '100%', gap: '8px', display: 'flex', flexDirection: 'column', mt: '10px' }}>
                 {orderItems?.map((item: TItemOrderProduct, index: number) => {
 
@@ -125,7 +267,10 @@ const MyCartPage: NextPage<TProps> = () => {
                         }}
                       >
                         <Box sx={{ flexBasis: '5%' }}>
-                          <Checkbox />
+                          <Checkbox
+                            checked={selectRows.includes(item.product)}
+                            value={item.product}
+                            onChange={(e) => handleOnChangeCheckBox(e.target.value)} />
                         </Box>
                         <Box sx={{ flexBasis: '10%' }}>
 
@@ -203,17 +348,45 @@ const MyCartPage: NextPage<TProps> = () => {
                             )}
                           </Box>
                         </Box>
-                        <Box sx={{ flexBasis: '15%', display: 'flex', alignItems: 'center', gap: '2' }}>
-
-                          <IconButton sx={{ backgroundColor: `${theme.palette.primary.main} !important`, color: `${theme.palette.common.white}` }}>
-                            <Icon icon='ic:round-minus'></Icon>
-                          </IconButton>
-                          <CustomTextField value={item.amount} sx={{
-                            '.MuiInputBase-input.MuiFilledInput-input': { width: '20px' },
-                            '.MuiInputBase-root.MuiFilledInput-root': { border: 'none' }
-                          }}></CustomTextField>
+                        <Box sx={{ flexBasis: '15%', display: 'flex', alignItems: 'center' }}>
 
                           <IconButton
+                            onClick={() => { handleChangeAmountCart(item, -1) }}
+                            sx={{ backgroundColor: `${theme.palette.primary.main} !important`, color: `${theme.palette.common.white}` }}>
+                            <Icon icon='ic:round-minus'></Icon>
+                          </IconButton>
+                          <CustomTextField
+
+                            // onChange={(e) => {
+                            //   const numValue = +e.target.value
+                            //   console.log(numValue);
+                            //   handleChangeAmountCart(item, numValue)
+                            // }}
+
+                            value={item.amount}
+                            inputProps={{
+                              inputMode: 'numeric',
+                              pattern: '[0-9]*',
+                              min: 1,
+                              max: 100
+
+                            }}
+                            sx={{
+                              '.MuiInputBase-input.MuiFilledInput-input': { width: '30px' },
+                              '.MuiInputBase-root.MuiFilledInput-root': {
+                                borderTop: 'none',
+                                borderLeft: 'none',
+                                borderRight: 'none',
+                                borderRadius: '0px !important',
+                                '&.Mui-focused': { backgroundColor: `${theme.palette.background.paper} !important`, boxShadow: 'none !important' }
+                              },
+
+                              ml: 1,
+                              mr: 1
+                            }}></CustomTextField>
+
+                          <IconButton
+                            onClick={() => { handleChangeAmountCart(item, 1) }}
                             sx={{ backgroundColor: `${theme.palette.primary.main} !important`, color: `${theme.palette.common.white}` }}
                           >
                             <Icon icon='ic:round-plus'></Icon>
@@ -239,6 +412,7 @@ const MyCartPage: NextPage<TProps> = () => {
                         </Box>
                         <Box sx={{ flexBasis: '5%' }}>
                           <IconButton
+                            onClick={() => { handleRemoveCart(item) }}
                             sx={{ color: `${theme.palette.error.main}` }}
                           >
                             <Icon icon='mdi:delete-outline'></Icon>
@@ -256,22 +430,30 @@ const MyCartPage: NextPage<TProps> = () => {
                   )
                 })}
               </Box>
-              <Box sx={{ width: '100%', display: 'flex', justifyContent: 'flex-end', mt: '20px' }}>
-                <Button
 
-                  variant='contained'
-                  sx={{
-                    height: 40,
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: '2px',
-                    fontWeight: 'bold'
-                  }}
-                >
-                  <Icon icon='icon-park-outline:buy' fontSize={20} />
-                  {t('Buy_now')}
-                </Button>
-              </Box>
+              {orderItems?.length > 0 &&
+                <>
+                  <Box sx={{ width: '100%', display: 'flex', justifyContent: 'flex-end', mt: '20px' }}>
+                    <Button
+                      disabled={!selectRows.length}
+                      variant='contained'
+                      sx={{
+                        height: 40,
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '2px',
+                        fontWeight: 'bold'
+                      }}
+                    >
+                      <Icon icon='icon-park-outline:buy' fontSize={20} />
+                      {t('Buy_now')}
+                    </Button>
+                  </Box>
+                </>
+
+              }
+
+
             </Box>
           </Grid>
 

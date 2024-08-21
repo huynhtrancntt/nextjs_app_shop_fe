@@ -30,7 +30,7 @@ import { AppDispatch, RootState } from 'src/stores'
 import { TItemOrderProduct } from 'src/types/order-product'
 import { get } from 'http'
 import { getLocalProductToCart } from 'src/helpers/storage'
-import { addProductToCart } from 'src/stores/order-product'
+import { updateProductToCart } from 'src/stores/order-product'
 import { formatNumberToLocal } from 'src/utils'
 import { hexToRGBA } from 'src/utils/hex-to-rgba'
 import { ROUTE_CONFIG } from 'src/configs/route'
@@ -93,7 +93,7 @@ const CardProduct = (props: TProps) => {
 
     if (user?._id) {
       dispatch(
-        addProductToCart({
+        updateProductToCart({
           orderItems: parseProductCart[user?._id] || []
         })
       )

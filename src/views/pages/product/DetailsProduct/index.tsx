@@ -39,7 +39,7 @@ import { useTranslation } from 'react-i18next'
 
 
 // ** Utils
-import { convertBase64, formatNumberToLocal, separationFullName, toFullName } from 'src/utils'
+import { convertBase64, convertUpdateProductToCart, formatNumberToLocal, separationFullName, toFullName } from 'src/utils'
 
 // ** Redux
 
@@ -55,24 +55,36 @@ import { useRouter } from 'next/router'
 import { TProduct } from 'src/types/product'
 import Image from 'next/image'
 import { hexToRGBA } from 'src/utils/hex-to-rgba'
-import { text } from 'node:stream/consumers'
+
+import { addProductToCart } from 'src/utils/addToCart'
+import { useAuth } from 'src/hooks/useAuth'
+import { useDispatch, useSelector } from 'react-redux'
+import { AppDispatch, RootState } from 'src/stores'
+import { TItemOrderProduct } from 'src/types/order-product'
 
 type TProps = {}
 
 const DetailsProductPage: NextPage<TProps> = () => {
   // State
   const [loading, setLoading] = useState(false)
+  const [amountProduct, setAmountProduct] = useState(1)
   const [dataProduct, setDataProduct] = useState<TProduct | any>({})
   const router = useRouter()
   const productId = router.query?.productId as string
 
+  const { user } = useAuth()
+
   // ** Hooks
   const { i18n } = useTranslation()
+
+
 
   // ** theme
   const theme = useTheme()
 
   // ** redux
+  const dispatch: AppDispatch = useDispatch()
+  const { orderItems } = useSelector((state: RootState) => state.orderProduct)
 
   // fetch api
   const fetchGetDetailsProduct = async (slug: string) => {
@@ -95,7 +107,30 @@ const DetailsProductPage: NextPage<TProps> = () => {
       fetchGetDetailsProduct(productId)
     }
   }, [productId])
-  console.log('dataProduct', { dataProduct })
+
+
+  const handleAddToCart = (item: TItemOrderProduct) => {
+
+    if (user?._id) {
+      // add to cart
+      if (amountProduct <= dataProduct.countInStock) {
+        addProductToCart(
+          user?._id,
+          item,
+          orderItems,
+          amountProduct,
+          dispatch
+        );
+        toast.success(t('Add_to_cart_success'))
+      }
+    } else {
+      toast.error(t('Please_login_first'))
+    }
+
+
+
+  }
+
 
   return (
     <>
@@ -242,16 +277,75 @@ const DetailsProductPage: NextPage<TProps> = () => {
                     </Box>
                   )}
                 </Box>
+                <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, mt: 2 }}>
+                  <IconButton
+                    onClick={() => {
+                      if (amountProduct > 1) {
+                        setAmountProduct((prev) => prev - 1)
+
+                      }
+
+                    }}
+                    sx={{ backgroundColor: `${theme.palette.primary.main} !important`, color: `${theme.palette.common.white}` }}>
+                    <Icon icon='ic:round-minus'></Icon>
+                  </IconButton>
+                  <CustomTextField
+                    onChange={(e) => {
+                      const numValue = +e.target.value.replace(/\D/g, '')
+                      if (numValue >= 1) {
+                        setAmountProduct(numValue)
+                      }
+                      if (numValue > dataProduct.countInStock) {
+                        setAmountProduct(dataProduct.countInStock)
+                      }
+
+                    }}
+
+                    value={amountProduct}
+                    inputProps={{
+                      inputMode: 'numeric',
+                      pattern: '[0-9]*',
+
+                    }}
+                    sx={{
+                      '.MuiInputBase-input.MuiFilledInput-input': { width: '30px' },
+                      '.MuiInputBase-root.MuiFilledInput-root': {
+                        borderTop: 'none',
+                        borderLeft: 'none',
+                        borderRight: 'none',
+                        borderRadius: '0px !important',
+                        '&.Mui-focused': { backgroundColor: `${theme.palette.background.paper} !important`, boxShadow: 'none !important' }
+                      },
+
+                      ml: 1,
+                      mr: 1
+                    }}></CustomTextField>
+
+                  <IconButton
+                    onClick={() => {
+
+                      setAmountProduct((prev) => prev + 1)
+                      if (amountProduct >= dataProduct.countInStock) {
+                        setAmountProduct(dataProduct.countInStock)
+                      }
+                    }}
+                    sx={{ backgroundColor: `${theme.palette.primary.main} !important`, color: `${theme.palette.common.white}` }}
+                  >
+                    <Icon icon='ic:round-plus'></Icon>
+                  </IconButton></Box>
                 <Box
                   sx={{
                     display: 'flex',
                     alignItems: 'center',
-                    padding: '0 12px 10px',
-                    gap: 6,
-                    mt: 8
+                    paddingBottom: 2,
+                    gap: 4,
+                    mt: 4
                   }}
                 >
                   <Button
+                    onClick={() => {
+                      handleAddToCart(dataProduct)
+                    }}
                     variant='outlined'
                     sx={{
                       height: 40,
@@ -281,7 +375,7 @@ const DetailsProductPage: NextPage<TProps> = () => {
               </Grid>
             </Grid>
           </Box>
-        </Grid>
+        </Grid >
         <Grid
           container
           item
@@ -315,7 +409,7 @@ const DetailsProductPage: NextPage<TProps> = () => {
             <Box sx={{ mt: 4 }} dangerouslySetInnerHTML={{ __html: dataProduct.description }} />
           </Box>
         </Grid>
-      </Grid>
+      </Grid >
     </>
   )
 }

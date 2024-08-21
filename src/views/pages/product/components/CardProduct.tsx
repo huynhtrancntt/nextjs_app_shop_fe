@@ -15,7 +15,7 @@ import Icon from 'src/components/Icon'
 
 // ** Config
 import { ROUTE_CONFIG } from 'src/configs/route'
-import { convertAddProductToCart, formatNumberToLocal } from 'src/utils'
+import { convertUpdateProductToCart, formatNumberToLocal } from 'src/utils'
 
 import { TProduct } from 'src/types/product'
 import { hexToRGBA } from 'src/utils/hex-to-rgba'
@@ -24,7 +24,7 @@ import { useRouter } from 'next/router'
 // ** Redux
 import { useDispatch, useSelector } from 'react-redux'
 import { AppDispatch, RootState } from 'src/stores'
-import { addProductToCart } from 'src/stores/order-product'
+import { updateProductToCart } from 'src/stores/order-product'
 
 
 // Storage
@@ -78,12 +78,12 @@ const CardProduct = (props: TCardProduct) => {
       product: item._id,
       slug: item.slug
     }
-    const listOrderItems = convertAddProductToCart(orderItems, addToCard)
+    const listOrderItems = convertUpdateProductToCart(orderItems, addToCard)
     // add to cart
 
     if (user?._id) {
       dispatch(
-        addProductToCart({
+        updateProductToCart({
           orderItems: listOrderItems
         })
       )
