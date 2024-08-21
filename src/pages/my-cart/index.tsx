@@ -3,16 +3,15 @@ import { NextPage } from 'next'
 import { ReactNode } from 'react'
 
 // ** views
+
 import LayoutNotApp from 'src/views/layouts/layoutNotApp'
-import DetailsProductPage from 'src/views/pages/product/DetailsProduct'
+import MyCartPage from 'src/views/pages/my-cart'
 
 type TProps = {}
 
 const Index: NextPage<TProps> = () => {
-  return <DetailsProductPage />
+  return <MyCartPage />
 }
 
 export default Index
 Index.getLayout = (page: ReactNode) => <LayoutNotApp>{page}</LayoutNotApp>
-Index.guestGuard = false
-Index.authGuard = false

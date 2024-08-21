@@ -75,17 +75,25 @@ const CardProduct = (props: TCardProduct) => {
       image: item.image,
       price: item.price,
       discount: item.discount,
-      product: item._id
+      product: item._id,
+      slug: item.slug
     }
     const listOrderItems = convertAddProductToCart(orderItems, addToCard)
     // add to cart
-    dispatch(
-      addProductToCart({
-        orderItems: listOrderItems
-      })
-    )
+
     if (user?._id) {
+      dispatch(
+        addProductToCart({
+          orderItems: listOrderItems
+        })
+      )
       setLocalProductToCart({ ...parseProductCart, [user?._id]: listOrderItems })
+    } else {
+
+      router.replace({
+        pathname: '/login',
+        query: { returnUrl: router.asPath }
+      })
     }
 
   }

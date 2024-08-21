@@ -4,5 +4,6 @@ export type TItemOrderProduct = {
   image: string,
   price: number,
   discount: number,
-  product: string
+  product: string,
+  slug: string
 }
