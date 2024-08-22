@@ -334,6 +334,7 @@ const ProductListPage: NextPage<TProps> = () => {
         toast.error(t(errorConfig))
       } else {
         if (openCreateEdit.id) {
+          // toast.error(messageErrorCreateEdit)
           toast.error(t('Update_product_error'))
         } else {
           toast.error(t('Create_product_error'))

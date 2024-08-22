@@ -47,6 +47,7 @@ import { EditorState, convertToRaw } from 'draft-js'
 import draftToHtml from 'draftjs-to-html'
 import { getDetailsProduct } from 'src/services/product'
 import CustomSwitch from 'src/components/custom-switch'
+import { getAllCities } from 'src/services/city'
 
 interface TCreateEditProduct {
   open: boolean
@@ -57,6 +58,7 @@ interface TCreateEditProduct {
 type TDefaultValue = {
   name: string
   type: string
+  location: string
   discount?: string
   price: string
   description: EditorState
@@ -71,7 +73,8 @@ const CreateEditProduct = (props: TCreateEditProduct) => {
   // State
   const [loading, setLoading] = useState(false)
   const [imageProduct, setImageProduct] = useState('')
-  const [optionCities, setOptionTypes] = useState<{ label: string; value: string }[]>([])
+  const [optionTypes, setOptionTypes] = useState<{ label: string; value: string }[]>([])
+  const [optionCities, setOptionCities] = useState<{ label: string; value: string }[]>([])
 
   // ** Props
   const { open, onClose, idProduct } = props
@@ -87,6 +90,7 @@ const CreateEditProduct = (props: TCreateEditProduct) => {
     name: yup.string().required(t('Required_field')),
     slug: yup.string().required(t('Required_field')),
     type: yup.string().required(t('Required_field')),
+    location: yup.string().required(t('Required_field')),
     countInStock: yup
       .string()
       .required(t('Required_field'))
@@ -159,6 +163,7 @@ const CreateEditProduct = (props: TCreateEditProduct) => {
   const defaultValues: TDefaultValue = {
     name: '',
     type: '',
+    location: '',
     discount: '',
     description: EditorState.createEmpty(),
     slug: '',
@@ -197,6 +202,7 @@ const CreateEditProduct = (props: TCreateEditProduct) => {
             discountStartDate: data?.discountStartDate || null,
             image: imageProduct,
             type: data.type,
+            location: data.location,
             discount: Number(data.discount) || 0,
             description: data.description ? draftToHtml(convertToRaw(data.description.getCurrentContent())) : '',
             status: data.status ? 1 : 0,
@@ -214,6 +220,7 @@ const CreateEditProduct = (props: TCreateEditProduct) => {
             discountStartDate: data.discountStartDate || null,
             image: imageProduct,
             type: data.type,
+            location: data.location,
             discount: Number(data.discount) || 0,
             description: data.description ? draftToHtml(convertToRaw(data.description.getCurrentContent())) : '',
             status: data.status ? 1 : 0,
@@ -235,11 +242,11 @@ const CreateEditProduct = (props: TCreateEditProduct) => {
     await getDetailsProduct(id)
       .then(res => {
         const data = res.data
-        console.log('data', { data })
         if (data) {
           reset({
             name: data.name,
             type: data.type,
+            location: data.location,
             discount: data.discount || '',
             description: data.description ? convertHTMLToDraft(data.description) : '',
             slug: data.slug,
@@ -273,6 +280,20 @@ const CreateEditProduct = (props: TCreateEditProduct) => {
       })
   }
 
+  const fetchAllCities = async () => {
+    setLoading(true)
+    await getAllCities({ params: { limit: -1, page: -1 } })
+      .then(res => {
+        const data = res?.data.cities
+        if (data) {
+          setOptionCities(data?.map((item: { name: string; _id: string }) => ({ label: item.name, value: item._id })))
+        }
+        setLoading(false)
+      })
+      .catch(e => {
+        setLoading(false)
+      })
+  }
   useEffect(() => {
     if (!open) {
       reset({
@@ -287,6 +308,7 @@ const CreateEditProduct = (props: TCreateEditProduct) => {
 
   useEffect(() => {
     fetchAllProductTypes()
+    fetchAllCities()
   }, [])
 
   return (
@@ -516,7 +538,7 @@ const CreateEditProduct = (props: TCreateEditProduct) => {
                               <CustomSelect
                                 fullWidth
                                 onChange={onChange}
-                                options={optionCities}
+                                options={optionTypes}
                                 error={Boolean(errors?.type)}
                                 onBlur={onBlur}
                                 value={value}
@@ -537,6 +559,51 @@ const CreateEditProduct = (props: TCreateEditProduct) => {
                           )}
                         />
                       </Grid>
+                      {/* Loaction */}
+                      <Grid item md={6} xs={12}>
+                        <Controller
+                          name='location'
+                          control={control}
+                          render={({ field: { onChange, onBlur, value } }) => (
+                            <Box>
+                              <InputLabel
+                                sx={{
+                                  fontSize: '13px',
+                                  marginBottom: '4px',
+                                  display: 'block',
+                                  color: errors?.location
+                                    ? theme.palette.error.main
+                                    : `rgba(${theme.palette.customColors.main}, 0.68)`
+                                }}
+                              >
+                                {t('Loaction')}
+                              </InputLabel>
+                              <CustomSelect
+                                fullWidth
+                                onChange={onChange}
+                                options={optionCities}
+                                error={Boolean(errors?.location)}
+                                onBlur={onBlur}
+                                value={value}
+                                placeholder={t('Select')}
+                              />
+                              {errors?.location?.message && (
+                                <FormHelperText
+                                  sx={{
+                                    color: errors?.location
+                                      ? theme.palette.error.main
+                                      : `rgba(${theme.palette.customColors.main}, 0.42)`
+                                  }}
+                                >
+                                  {errors?.location?.message}
+                                </FormHelperText>
+                              )}
+                            </Box>
+                          )}
+                        />
+                      </Grid>
+                      {/* Discount */}
+
                       <Grid item md={6} xs={12}>
                         <Controller
                           control={control}
@@ -563,6 +630,8 @@ const CreateEditProduct = (props: TCreateEditProduct) => {
                           name='discount'
                         />
                       </Grid>
+                      <Grid item md={6} xs={12}></Grid>
+
                       <Grid item md={6} xs={12}>
                         <Controller
                           control={control}
@@ -604,6 +673,8 @@ const CreateEditProduct = (props: TCreateEditProduct) => {
                           name='discountEndDate'
                         />
                       </Grid>
+
+                      {/* Description */}
                       <Grid item md={12} xs={12}>
                         <Controller
                           control={control}

@@ -3,6 +3,7 @@ export const ROUTE_CONFIG = {
   HOME: '/',
   PRODUCT: '/product',
   LOGIN: '/login',
+  MY_CART: '/my-cart',
   CHANGE_PASSWORD: '/change-password',
   SYSTEM: {
     ROLE: '/system/roles',

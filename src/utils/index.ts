@@ -135,9 +135,11 @@ export const cloneDeep = (obj: any) => {
 
 }
 
-export const convertAddProductToCart = (orderItems: TItemOrderProduct[], addItem: TItemOrderProduct) => {
+export const convertUpdateProductToCart = (orderItems: TItemOrderProduct[], addItem: TItemOrderProduct) => {
 
   try {
+    let result = [];
+
     const cloneOrderItems = cloneDeep(orderItems)
 
     const findIndex = cloneOrderItems.find((item: TItemOrderProduct) => item.product === addItem.product)
@@ -146,9 +148,15 @@ export const convertAddProductToCart = (orderItems: TItemOrderProduct[], addItem
 
       findIndex.amount += addItem.amount
 
+      if (findIndex.amount == 0) {
+        findIndex.amount = 1
+      }
+
     } else {
       cloneOrderItems.push(addItem)
     }
+
+    result = cloneOrderItems.filter((item: TItemOrderProduct) => item.amount > -1)
 
     return cloneOrderItems
 
@@ -161,4 +169,15 @@ export const convertAddProductToCart = (orderItems: TItemOrderProduct[], addItem
   }
 
 
+}
+
+
+export const isExpiredProduct = (start: Date | null, end: Date | null) => {
+  if (!start || !end) return false
+
+  const now = new Date().getTime();
+  const startDateTime = new Date(start).getTime();
+  const endDateTime = new Date(end).getTime();
+
+  return startDateTime <= now && endDateTime >= now
 }

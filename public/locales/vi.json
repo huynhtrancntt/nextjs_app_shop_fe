@@ -348,5 +348,16 @@
   "ratings": "đánh giá",
   "comments": "bình luận",
   "Product_details": "Chi tiết sản phẩm",
-  "View": "Xem"
+  "View": "Xem",
+  "Count_in_stock_product": "Còn {{count}} sản phẩm trong kho",
+  "Out_of_stock_product": "Sản phẩm đã hết hàng",
+  "Cart_product_image": "Ảnh",
+  "Cart_product_name": "Tên",
+  "Cart_product_price": "Giá",
+  "Cart_product_quantity": "Số lượng",
+  "Cart_product_total": "Tổng tiền",
+  "No-data": "Không có dữ liệu",
+  "Cart_is_empty": "Giỏ hàng không có sản phẩm",
+  "Loaction": "Vị trí",
+  "Related_products": "Sản phẩm liên quan"
 }
