@@ -40,18 +40,21 @@ const LayoutNotApp: NextPage<TProps> = ({ children }) => {
         <Container
           sx={{
             m: 4,
-            width: 'calc(100vw - 32px)',
+            width: 'calc(100vw - 48px)',
             maxWidth: 'unset !important',
-            overflow: 'auto',
-            maxHeight: `calc(100vh - ${theme.mixins.toolbar.minHeight} - 32px)`,
+
             padding: '0 !important',
-            borderRadius: '15px'
+            borderRadius: '15px',
+            margin: '8px',
+            marginLeft: '16px !important',
+
           }}
         >
+
           {children}
         </Container>
       </Box>
-    </Box>
+    </Box >
   )
 }
 

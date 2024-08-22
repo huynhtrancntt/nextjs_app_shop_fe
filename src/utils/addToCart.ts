@@ -1,19 +1,10 @@
 // addToCart.ts
-import toast from "react-hot-toast";
-import { cloneDeep, convertUpdateProductToCart } from ".";
+
+import { cloneDeep, convertUpdateProductToCart, isExpiredProduct } from ".";
 import { getLocalProductToCart, setLocalProductToCart } from "src/helpers/storage";
 import { updateProductToCart } from "src/stores/order-product";
 import { TItemOrderProduct } from "src/types/order-product";
 
-type CartItem = {
-    name: string;
-    amount: number;
-    image: string;
-    price: number;
-    discount: number;
-    product: string;
-    slug: string;
-};
 
 export const addProductToCart = (
     userId: string | undefined,
@@ -26,14 +17,26 @@ export const addProductToCart = (
 
     const productCart = getLocalProductToCart();
     const parseProductCart = productCart ? JSON.parse(productCart) : {};
-    const newCartItem: CartItem = {
+
+    const discount = isExpiredProduct(item.discountStartDate, item.discountEndDate) ? item.discount : 0
+
+    const newCartItem: TItemOrderProduct = {
         name: item.name,
         amount: quantity,
         image: item.image,
         price: item.price,
-        discount: item.discount,
+        discount: discount,
         product: item.product,
         slug: item.slug,
+        averageRating: item.averageRating,
+        createdAt: item.createdAt,
+        totalLike: item.totalLike,
+        countInStock: item.countInStock,
+        discountStartDate: item.discountStartDate,
+        discountEndDate: item.discountEndDate,
+        totalReviews: item.totalReviews,
+        sold: item.sold,
+
     };
 
     const updatedOrderItems = convertUpdateProductToCart(orderItems, newCartItem);

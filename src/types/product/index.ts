@@ -16,6 +16,7 @@ export type TParamsCreateProduct = {
   discountEndDate: Date | null
   discountStartDate: Date | null
   image: string
+  location: string
 }
 export type TParamsEditProduct = {
   id: string
@@ -30,6 +31,7 @@ export type TParamsEditProduct = {
   discountEndDate: Date | null
   discountStartDate: Date | null
   image: string
+  location: string
 }
 export type TParamsDeleteProduct = {
   id: string
@@ -52,4 +54,17 @@ export type TProduct = {
   totalReviews: number
   discount: number
   sold: number
+  location: {
+    name: string,
+    id: string
+  }
+}
+
+
+export type TParamsGetRelatedProduct = {
+  slug: string
+  limit?: number
+  page?: number
+  search?: string
+  order?: string
 }

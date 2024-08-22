@@ -1,25 +1,37 @@
 // ** React
 import React, { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
+
 // ** Form
+
 import { yupResolver } from '@hookform/resolvers/yup'
 import { Controller, useForm } from 'react-hook-form'
 import * as yup from 'yup'
+
 // ** Mui
+
 import { Box, Button, FormHelperText, Grid, IconButton, Typography, useTheme } from '@mui/material'
+
 // ** Components
+
 import Icon from 'src/components/Icon'
 import CustomModal from 'src/components/custom-modal'
 import Spinner from 'src/components/spinner'
 import CustomTextField from 'src/components/text-field'
+
 // ** Services
+
 import { getDetailsPaymentType } from 'src/services/payment-type'
+
 // ** Redux
+
 import { AppDispatch } from 'src/stores'
 import { useDispatch } from 'react-redux'
 import { createPaymentTypeAsync, updatePaymentTypeAsync } from 'src/stores/payment-type/actions'
 import CustomSelect from 'src/components/custom-select'
+
 // ** Configs
+
 import { PAYMENT_TYPES } from 'src/configs/payment'
 
 interface TCreateEditPaymentType {

@@ -67,9 +67,11 @@ const CreateEditRole = (props: TCreateEditRole) => {
   const onSubmit = (data: { name: string }) => {
     if (!Object.keys(errors).length) {
       if (idRole) {
+
         dispatch(updateRoleAsync({ name: data?.name, id: idRole }))
-        // update
+
       } else {
+
         dispatch(createRoleAsync({ name: data?.name }))
       }
     }

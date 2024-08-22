@@ -24,12 +24,13 @@ import { getAllProductTypes } from 'src/services/product-type'
 
 // ** Utils
 import { formatFilter } from 'src/utils'
-import CardProduct from 'src/views/pages/product/components/CardProduct'
+import CartProduct from 'src/views/pages/product/components/CartProduct'
 import { getAllProductsPublic } from 'src/services/product'
 import { TProduct } from 'src/types/product'
 import InputSearch from 'src/components/input-search'
 import { styled } from '@mui/material'
 import FilterProduct from 'src/views/pages/product/components/FilterProduct'
+import NoData from 'src/components/no-data'
 
 type TProps = {}
 
@@ -188,15 +189,18 @@ const HomePage: NextPage<TProps> = () => {
                     {productsPublic?.data?.map((item: TProduct) => {
                       return (
                         <Grid item key={item._id} md={4} sm={6} xs={12}>
-                          <CardProduct item={item} />
+                          <CartProduct item={item} />
                         </Grid>
                       )
                     })}
                   </>
                 ) : (
-                  <Box sx={{ width: '100%', display: 'flex', justifyContent: 'center', mt: 4 }}>
-                    <Typography>Không có dữ liệu</Typography>
+
+                  <Box sx={{ width: '100%', mt: 10 }}>
+                    <NoData widthImage='60px' heightImage='60px' textNoData={t('No_product')} />
                   </Box>
+
+
                 )}
               </Grid>
             </Grid>

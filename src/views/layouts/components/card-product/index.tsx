@@ -2,7 +2,7 @@
 import React, { use, useEffect, useMemo } from 'react'
 
 // ** Next
-import Image from 'next/image'
+
 import { useRouter } from 'next/router'
 
 // ** Mui Imports
@@ -28,12 +28,14 @@ import { useTranslation } from 'react-i18next'
 import { useDispatch, useSelector } from 'react-redux'
 import { AppDispatch, RootState } from 'src/stores'
 import { TItemOrderProduct } from 'src/types/order-product'
-import { get } from 'http'
+
+
 import { getLocalProductToCart } from 'src/helpers/storage'
 import { updateProductToCart } from 'src/stores/order-product'
-import { formatNumberToLocal } from 'src/utils'
-import { hexToRGBA } from 'src/utils/hex-to-rgba'
+import { formatNumberToLocal, isExpiredProduct } from 'src/utils'
+
 import { ROUTE_CONFIG } from 'src/configs/route'
+import NoData from 'src/components/no-data'
 
 
 type TProps = {}
@@ -103,6 +105,8 @@ const CardProduct = (props: TProps) => {
   }, [])
 
 
+
+
   return (
     <>
       <Box sx={{ display: 'flex', alignItems: 'center', textAlign: 'center' }}>
@@ -157,58 +161,67 @@ const CardProduct = (props: TProps) => {
           transformOrigin={{ horizontal: 'right', vertical: 'top' }}
           anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
         >
-
-          {orderItems?.map((item: TItemOrderProduct) => (
-            <StyleMenuItem
-              key={item.product}
-              onClick={() => handleNavigateProduct(item)}
-            >
-              <Avatar alt={item.name} src={item.image} />
-              <Box sx={{ ml: 2, flex: 1 }}>
-                <Typography>   {item.name}
-                </Typography>
-                <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-                  {item.discount > 0 && (
-                    <Typography
-                      variant='h6'
-                      sx={{
-                        color: theme.palette.error.main,
-                        fontWeight: 'bold',
-                        textDecoration: 'line-through',
-                        fontSize: '10px'
-                      }}
-                    >
-                      {formatNumberToLocal(item.price)} VND
+          {orderItems.length > 0 ? (
+            <>
+              {orderItems?.map((item: TItemOrderProduct) => (
+                <StyleMenuItem
+                  key={item.product}
+                  onClick={() => handleNavigateProduct(item)}
+                >
+                  <Avatar alt={item.name} src={item.image} />
+                  <Box sx={{ ml: 2, flex: 1 }}>
+                    <Typography>   {item.name}
                     </Typography>
-                  )}
-                  <Typography
-                    variant='h4'
-                    sx={{
-                      color: theme.palette.primary.main,
-                      fontWeight: 'bold',
-                      fontSize: '12px'
-                    }}
-                  >
-                    {item.discount > 0 ? (
-                      <>{formatNumberToLocal((item.price * (100 - item.discount)) / 100)}</>
-                    ) : (
-                      <>{formatNumberToLocal(item.price)}</>
-                    )}{' '}
-                    VND
-                  </Typography>
+                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+                      {item.discount > 0 && (
+                        <Typography
+                          variant='h6'
+                          sx={{
+                            color: theme.palette.error.main,
+                            fontWeight: 'bold',
+                            textDecoration: 'line-through',
+                            fontSize: '10px'
+                          }}
+                        >
+                          {formatNumberToLocal(item.price)} VND
+                        </Typography>
+                      )}
+                      <Typography
+                        variant='h4'
+                        sx={{
+                          color: theme.palette.primary.main,
+                          fontWeight: 'bold',
+                          fontSize: '12px'
+                        }}
+                      >
+                        {item.discount > 0 ? (
+                          <>{formatNumberToLocal((item.price * (100 - item.discount)) / 100)}</>
+                        ) : (
+                          <>{formatNumberToLocal(item.price)}</>
+                        )}{' '}
+                        VND
+                      </Typography>
 
-                </Box>
+                    </Box>
 
+                  </Box>
+
+
+                </StyleMenuItem>
+              ))}
+              <Box sx={{ width: '100%', display: 'flex', justifyContent: 'flex-end' }}>
+                <Button type='submit' variant='contained' sx={{ mr: 2, borderRadius: '0px' }} onClick={() => router.push(ROUTE_CONFIG.MY_CART)}>
+                  {t('View_cart')}
+                </Button>
               </Box>
+            </>
 
+          ) : <>
+            <Box sx={{ display: 'flex', justifyContent: 'center', width: '300px', mt: 2 }}>
+              <NoData widthImage='40px' heightImage='40px' textNoData={t('Cart_is_empty')} />
+            </Box>
+          </>}
 
-            </StyleMenuItem>
-          ))}
-          <Box sx={{ width: '100%', display: 'flex', justifyContent: 'flex-end' }}>
-            <Button type='submit' variant='contained' sx={{ mr: 2, borderRadius: '0px' }} onClick={() => router.push(ROUTE_CONFIG.MY_CART)}>
-              {t('View_cart')}
-            </Button>
-          </Box>
 
 
 

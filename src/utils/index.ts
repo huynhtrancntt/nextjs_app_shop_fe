@@ -170,3 +170,14 @@ export const convertUpdateProductToCart = (orderItems: TItemOrderProduct[], addI
 
 
 }
+
+
+export const isExpiredProduct = (start: Date | null, end: Date | null) => {
+  if (!start || !end) return false
+
+  const now = new Date().getTime();
+  const startDateTime = new Date(start).getTime();
+  const endDateTime = new Date(end).getTime();
+
+  return startDateTime <= now && endDateTime >= now
+}

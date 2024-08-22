@@ -48,9 +48,12 @@ const UserLayout: NextPage<TProps> = ({ children }) => {
             maxHeight: `calc(100vh - ${theme.mixins.toolbar.minHeight}px - 32px)`,
             height: `calc(100vh - ${theme.mixins.toolbar.minHeight}px - 32px)`,
             padding: '0 !important',
-            borderRadius: '15px'
+            borderRadius: '15px',
+            margin: '0px !important',
+
           }}
         >
+
           {children}
         </Container>
       </Box>

@@ -15,7 +15,7 @@ import Icon from 'src/components/Icon'
 
 // ** Config
 import { ROUTE_CONFIG } from 'src/configs/route'
-import { convertUpdateProductToCart, formatNumberToLocal } from 'src/utils'
+import { convertUpdateProductToCart, formatNumberToLocal, isExpiredProduct } from 'src/utils'
 
 import { TProduct } from 'src/types/product'
 import { hexToRGBA } from 'src/utils/hex-to-rgba'
@@ -30,8 +30,11 @@ import { updateProductToCart } from 'src/stores/order-product'
 // Storage
 import { getLocalProductToCart, setLocalProductToCart } from 'src/helpers/storage'
 import { useAuth } from 'src/hooks/useAuth'
+import { addProductToCart } from 'src/utils/addToCart'
+import { TItemOrderProduct } from 'src/types/order-product'
+import toast from 'react-hot-toast'
 
-interface TCardProduct {
+interface TCartProduct {
   item: TProduct
 }
 
@@ -43,7 +46,7 @@ const StyleCard = styled(Card)(({ theme }) => ({
   }
 }))
 
-const CardProduct = (props: TCardProduct) => {
+const CartProduct = (props: TCartProduct) => {
   // ** Props
   const { item } = props
 
@@ -65,44 +68,90 @@ const CardProduct = (props: TCardProduct) => {
 
   const handleAddToCart = (item: TProduct) => {
 
-    const productCart = getLocalProductToCart()
 
-    const parseProductCart = productCart ? JSON.parse(productCart) : {}
-
-    const addToCard = {
+    // TProduct
+    const addToCard: TItemOrderProduct = {
       name: item.name,
       amount: 1,
       image: item.image,
       price: item.price,
       discount: item.discount,
       product: item._id,
-      slug: item.slug
+      slug: item.slug,
+      averageRating: item.averageRating,
+      createdAt: item.createdAt,
+      totalLike: item.totalLike,
+      countInStock: item.countInStock,
+      discountStartDate: item.discountStartDate,
+      discountEndDate: item.discountEndDate,
+      totalReviews: item.totalReviews,
+      sold: item.sold
     }
-    const listOrderItems = convertUpdateProductToCart(orderItems, addToCard)
-    // add to cart
 
     if (user?._id) {
-      dispatch(
-        updateProductToCart({
-          orderItems: listOrderItems
-        })
-      )
-      setLocalProductToCart({ ...parseProductCart, [user?._id]: listOrderItems })
-    } else {
+      // add to cart
+      //if (amountProduct <= dataProduct.countInStock) {
+      addProductToCart(
+        user?._id,
+        addToCard,
+        orderItems,
+        1,
+        dispatch
+      );
+      toast.success(t('Add_to_cart_success'))
 
-      router.replace({
-        pathname: '/login',
-        query: { returnUrl: router.asPath }
-      })
+    } else {
+      toast.error(t('Please_login_first'))
     }
 
+    // const productCart = getLocalProductToCart()
+
+    // const parseProductCart = productCart ? JSON.parse(productCart) : {}
+
+    // const discount = isExpiredProduct(item.discountStartDate, item.discountEndDate) ? item.discount : 0
+
+    // const addToCard = {
+    //   name: item.name,
+    //   amount: 1,
+    //   image: item.image,
+    //   price: item.price,
+    //   discount: discount,
+    //   product: item._id,
+    //   slug: item.slug
+    // }
+    // const listOrderItems = convertUpdateProductToCart(orderItems, addToCard)
+    // // add to cart
+
+    // if (user?._id) {
+    //   dispatch(
+    //     updateProductToCart({
+    //       orderItems: listOrderItems
+    //     })
+    //   )
+    //   setLocalProductToCart({ ...parseProductCart, [user?._id]: listOrderItems })
+    // } else {
+
+    //   router.replace({
+    //     pathname: '/login',
+    //     query: { returnUrl: router.asPath }
+    //   })
+    // }
+
   }
+
+
+  const memoExpiredProduct = React.useMemo(() => {
+    return isExpiredProduct(item.discountStartDate, item.discountEndDate)
+  }, [item])
+
+
 
 
   return (
     <StyleCard sx={{ width: '100%' }}>
       <CardMedia component='img' height='194' image={item.image} alt='image' />
       <CardContent sx={{ padding: '8px 12px' }}>
+        {/* Name   */}
         <Typography
           onClick={() => handleNavigateDetails(item.slug)}
           variant='h5'
@@ -115,13 +164,14 @@ const CardProduct = (props: TCardProduct) => {
             display: '-webkit-box',
             '-webkitLineClamp': '2',
             '-webkitBoxOrient': 'vertical',
-            minHeight: '48px'
+            minHeight: '32px'
           }}
         >
           {item.name}
         </Typography>
+        {/* Price  / discount*/}
         <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-          {item.discount > 0 && (
+          {item.discount > 0 && memoExpiredProduct && (
             <Typography
               variant='h6'
               sx={{
@@ -142,14 +192,14 @@ const CardProduct = (props: TCardProduct) => {
               fontSize: '18px'
             }}
           >
-            {item.discount > 0 ? (
+            {item.discount > 0 && memoExpiredProduct ? (
               <>{formatNumberToLocal((item.price * (100 - item.discount)) / 100)}</>
             ) : (
               <>{formatNumberToLocal(item.price)}</>
             )}{' '}
             VND
           </Typography>
-          {item.discount > 0 && (
+          {item.discount > 0 && memoExpiredProduct && (
             <Box
               sx={{
                 backgroundColor: hexToRGBA(theme.palette.error.main, 0.42),
@@ -175,11 +225,14 @@ const CardProduct = (props: TCardProduct) => {
           )}
         </Box>
 
+
+        {/* CountInStock / sold  */}
         <Typography variant='body2' color='text.secondary'>
+
           {item.countInStock > 0 ? (
             <>{t('Count_in_stock_product', { count: item.countInStock })}</>
           ) : (
-            <span>Hết hàng</span>
+            <span>{t('Out_of_stock_product')}</span>
           )}
         </Typography>
         {item.sold && (
@@ -187,6 +240,21 @@ const CardProduct = (props: TCardProduct) => {
             <>{t('Sold_product', { count: item.countInStock })}</>
           </Typography>
         )}
+
+        {/* Location */}
+        <Box sx={{ display: 'flex', alignItems: 'center', mt: 1 }}>
+          <Icon icon='mdi:map-marker-outline' />
+          <Typography variant='h6'
+            sx={{
+              // color: theme.palette.error.main,
+              fontWeight: 'bold',
+              // textDecoration: 'line-through',
+              fontSize: '12px',
+            }}>
+            {item?.location?.name}
+          </Typography>
+        </Box>
+        {/* averageRating/ so sanh / Đánh giá /  */}
         <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
           <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
             {!!item.averageRating && (
@@ -210,6 +278,7 @@ const CardProduct = (props: TCardProduct) => {
           </IconButton>
         </Box>
       </CardContent>
+      {/* Add to cart / Buy now */}
       <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', padding: '0 12px 10px', gap: 2 }}>
         <Button
           variant='outlined'
@@ -245,4 +314,4 @@ const CardProduct = (props: TCardProduct) => {
   )
 }
 
-export default CardProduct
+export default CartProduct
