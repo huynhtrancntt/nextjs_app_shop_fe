@@ -31,6 +31,7 @@ import InputSearch from 'src/components/input-search'
 import { styled } from '@mui/material'
 import FilterProduct from 'src/views/pages/product/components/FilterProduct'
 import NoData from 'src/components/no-data'
+import { getAllCities } from 'src/services/city'
 
 type TProps = {}
 
@@ -50,6 +51,10 @@ const HomePage: NextPage<TProps> = () => {
   const [searchBy, setSearchBy] = useState('')
   const [productTypeSelected, setProductTypeSelected] = useState('')
   const [reviewSelected, setReviewSelected] = useState('')
+
+
+  const [optionCities, setOptionCities] = useState<{ label: string; value: string }[]>([])
+  const [locationSelected, setLocationSelected] = useState('')
 
   const firstRender = useRef<boolean>(false)
 
@@ -93,8 +98,23 @@ const HomePage: NextPage<TProps> = () => {
     setPageSize(pageSize)
   }
 
-  const handleFilterProduct = (review: string) => {
-    setReviewSelected(review)
+
+  const handleFilterProduct = (value: string, type: string) => {
+    switch (type) {
+      case 'review': {
+        setReviewSelected(value)
+        break
+      }
+      case 'location': {
+        setLocationSelected(value)
+        break
+      }
+    }
+  }
+
+  const handleResetFilter = () => {
+    setLocationSelected('')
+    setReviewSelected('')
   }
 
   // ** fetch api
@@ -115,8 +135,26 @@ const HomePage: NextPage<TProps> = () => {
       })
   }
 
+  // ** fetch api
+  const fetchAllCities = async () => {
+    setLoading(true)
+    await getAllCities({ params: { limit: -1, page: -1 } })
+      .then(res => {
+        const data = res?.data.cities
+        if (data) {
+          setOptionCities(data?.map((item: { name: string; _id: string }) => ({ label: item.name, value: item._id })))
+        }
+        setLoading(false)
+      })
+      .catch(e => {
+        setLoading(false)
+      })
+  }
+
+
   useEffect(() => {
     fetchAllTypes()
+    fetchAllCities()
   }, [])
 
   useEffect(() => {
@@ -128,11 +166,11 @@ const HomePage: NextPage<TProps> = () => {
 
   useEffect(() => {
     if (firstRender.current) {
-      setFilterBy({ productType: productTypeSelected, minStar: reviewSelected })
+      setFilterBy({ productType: productTypeSelected, minStar: reviewSelected, productLocation: locationSelected })
     }
 
 
-  }, [productTypeSelected, reviewSelected])
+  }, [productTypeSelected, reviewSelected, locationSelected])
 
 
 
@@ -173,7 +211,13 @@ const HomePage: NextPage<TProps> = () => {
           >
             <Grid item md={3} display={{ md: 'flex', xs: 'none' }}>
               <Box sx={{ width: '100%' }}>
-                <FilterProduct handleFilterProduct={handleFilterProduct} />
+                <FilterProduct
+                  locationSelected={locationSelected}
+                  reviewSelected={reviewSelected}
+                  handleReset={handleResetFilter}
+                  optionCities={optionCities}
+                  handleFilterProduct={handleFilterProduct}
+                />
               </Box>
             </Grid>
             <Grid item md={9} xs={12}>
