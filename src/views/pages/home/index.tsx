@@ -190,7 +190,7 @@ const HomePage: NextPage<TProps> = () => {
         </StyledTabs>
         <Box sx={{ display: 'flex', justifyContent: 'flex-end', mt: 4 }}>
           <Box sx={{ width: '300px' }}>
-            <InputSearch value={searchBy} onChange={(value: string) => setSearchBy(value)} />
+            <InputSearch placeholder={t('Search_name_product')} value={searchBy} onChange={(value: string) => setSearchBy(value)} />
           </Box>
         </Box>
 
