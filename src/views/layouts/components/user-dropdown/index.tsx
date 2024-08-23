@@ -117,7 +117,7 @@ const UserDropdown = (props: TProps) => {
   }, [userData])
 
   return (
-    <React.Fragment>
+    <div>
       <Box sx={{ display: 'flex', alignItems: 'center', textAlign: 'center' }}>
         <Tooltip title={t('Account')}>
           <IconButton
@@ -246,7 +246,7 @@ const UserDropdown = (props: TProps) => {
           {t('Logout')}
         </MenuItem>
       </Menu>
-    </React.Fragment>
+    </div>
   )
 }
 
