@@ -56,8 +56,9 @@ export type TProduct = {
   sold: number
   location: {
     name: string,
-    id: string
+    _id: string
   }
+  likedBy: string[]
 }
 
 

@@ -35,6 +35,7 @@ import { addProductToCart, removeProductFromCart } from 'src/utils/addToCart';
 
 import { hexToRGBA } from 'src/utils/hex-to-rgba';
 import NoData from 'src/components/no-data';
+import Image from 'next/image';
 
 type TProps = {};
 
@@ -176,7 +177,7 @@ const MyCartPage: NextPage<TProps> = () => {
                     />
                   </Box>
                   <Box sx={{ flexBasis: '10%' }}>
-                    <Avatar alt={item.name} src={item.image} />
+                    <Image src={item.image} alt={item.name} width={60} height={60} />
                   </Box>
                   <Typography
                     sx={{
