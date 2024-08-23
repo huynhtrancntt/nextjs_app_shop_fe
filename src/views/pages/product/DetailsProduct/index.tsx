@@ -179,12 +179,12 @@ const DetailsProductPage: NextPage<TProps> = () => {
               <Grid item md={5} xs={12}>
                 <Image
                   src={dataProduct?.image}
-                  alt='banner'
+                  alt={dataProduct?.image}
                   width={0}
                   height={0}
                   style={{
                     height: '100%',
-                    maxHeight: '300px',
+                    maxHeight: '420px',
                     width: '100%',
                     borderRadius: '15px'
                   }}
@@ -516,9 +516,6 @@ const DetailsProductPage: NextPage<TProps> = () => {
               >
                 {dataProductRelated.length > 0 ? (
                   <Box sx={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
-                    {dataProductRelated && dataProductRelated.length > 0 && dataProductRelated.map(item => {
-                      return <CardRelatedProduct key={item._id} item={item} />
-                    })}
                     {dataProductRelated.map(item => {
                       return <CardRelatedProduct key={item._id} item={item} />
                     })}

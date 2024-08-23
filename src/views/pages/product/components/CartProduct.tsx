@@ -33,6 +33,7 @@ import { useAuth } from 'src/hooks/useAuth'
 import { addProductToCart } from 'src/utils/addToCart'
 import { TItemOrderProduct } from 'src/types/order-product'
 import toast from 'react-hot-toast'
+import { likeProductAsync, unLikeProductAsync } from 'src/stores/product/actions'
 
 interface TCartProduct {
   item: TProduct
@@ -66,7 +67,7 @@ const CartProduct = (props: TCartProduct) => {
     router.push(`${ROUTE_CONFIG.PRODUCT}/${slug}`)
   }
 
-  const handleAddToCart = (item: TProduct) => {
+  const handleUpdateProductToCart = (item: TProduct) => {
 
 
     // TProduct
@@ -144,8 +145,30 @@ const CartProduct = (props: TCartProduct) => {
     return isExpiredProduct(item.discountStartDate, item.discountEndDate)
   }, [item])
 
+  const handleToggleLikeProduct = (id: string, isLiked: boolean) => {
+    if (user?._id) {
+      if (isLiked) {
+        dispatch(unLikeProductAsync({ productId: id }))
+      } else {
+        dispatch(likeProductAsync({ productId: id }))
+      }
+    } else {
+      toast.error(t('Please_login_first'))
+    }
+  }
 
-
+  const handleBuyProductToCart = (item: TProduct) => {
+    handleUpdateProductToCart(item)
+    router.push(
+      {
+        pathname: ROUTE_CONFIG.MY_CART,
+        query: {
+          selected: item._id
+        }
+      },
+      ROUTE_CONFIG.MY_CART
+    )
+  }
 
   return (
     <StyleCard sx={{ width: '100%' }}>
@@ -273,8 +296,13 @@ const CartProduct = (props: TCartProduct) => {
               {!!item.totalReviews ? <b>{item.totalReviews}</b> : <span>{t('not_review')}</span>}
             </Typography>
           </Box>
-          <IconButton>
-            <Icon icon='mdi:heart' />
+          {/* Like */}
+          <IconButton onClick={() => handleToggleLikeProduct(item._id, Boolean(user && item?.likedBy?.includes(user._id)))}>
+            {user && item?.likedBy?.includes(user._id) ? (
+              <Icon icon='mdi:heart' style={{ color: theme.palette.primary.main }} />
+            ) : (
+              <Icon icon='tabler:heart' style={{ color: theme.palette.primary.main }} />
+            )}
           </IconButton>
         </Box>
       </CardContent>
@@ -290,12 +318,13 @@ const CartProduct = (props: TCartProduct) => {
             gap: '2px',
             fontWeight: 'bold'
           }}
-          onClick={() => handleAddToCart(item)}
+          onClick={() => handleUpdateProductToCart(item)}
         >
           <Icon icon='bx:cart' fontSize={24} style={{ position: 'relative', top: '-2px' }} />
           {t('Add_to_cart')}
         </Button>
         <Button
+          onClick={() => handleBuyProductToCart(item)}
           fullWidth
           variant='contained'
           sx={{
