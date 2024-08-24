@@ -43,7 +43,7 @@ type TProps = {}
 const StyleMenuItem = styled(MenuItem)<MenuItemProps>(({ theme }) => ({
 
 }))
-const CardProduct = (props: TProps) => {
+const CartProduct = (props: TProps) => {
   // ** Translation
   const { t, i18n } = useTranslation()
 
@@ -237,4 +237,4 @@ const CardProduct = (props: TProps) => {
   )
 }
 
-export default CardProduct
+export default CartProduct

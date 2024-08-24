@@ -337,7 +337,7 @@ const DeliveryTypeListPage: NextPage<TProps> = () => {
               <Box sx={{ width: '200px' }}>
                 <InputSearch value={searchBy} onChange={(value: string) => setSearchBy(value)} />
               </Box>
-              {!CREATE && (
+              {CREATE && (
                 <GridCreate
                   disabled={!CREATE}
                   onClick={() => {

@@ -36,19 +36,23 @@ import { addProductToCart, removeProductFromCart } from 'src/utils/addToCart';
 import { hexToRGBA } from 'src/utils/hex-to-rgba';
 import NoData from 'src/components/no-data';
 import Image from 'next/image';
+import { useRouter } from 'next/router';
+import { ROUTE_CONFIG } from 'src/configs/route';
 
 type TProps = {};
 
 const MyCartPage: NextPage<TProps> = () => {
   // ** State
   const [loading, setLoading] = useState(false);
-  const [selectRows, setSelectRows] = useState<string[]>([]);
+  const [selectedRows, setSelectedRows] = useState<string[]>([]);
 
   // ** Translate
   const { t } = useTranslation();
   // ** Hooks
   const { i18n } = useTranslation();
+  const router = useRouter()
   const { user } = useAuth();
+
   const theme = useTheme();
   const dispatch: AppDispatch = useDispatch();
 
@@ -58,6 +62,33 @@ const MyCartPage: NextPage<TProps> = () => {
   const memoListAllProductIds = useMemo(() => {
     return orderItems.map((item: TItemOrderProduct) => item.product);
   }, [orderItems]);
+
+  const memoItemsSelectedProduct = useMemo(() => {
+    return selectedRows.map(idSelected => {
+      const findItem: any = orderItems.find((item: TItemOrderProduct) => item.product === idSelected)
+      if (findItem) {
+        return {
+          ...findItem
+        }
+      }
+    })
+  }, [selectedRows, orderItems])
+
+  const memoTotalSelectedProduct = useMemo(() => {
+    const total = memoItemsSelectedProduct?.reduce((result, current: TItemOrderProduct) => {
+      const currentPrice = current?.discount > 0 ? (current?.price * (100 - current?.discount)) / 100 : current?.price
+
+      return result + currentPrice * current?.amount
+    }, 0)
+
+    return total
+  }, [memoItemsSelectedProduct])
+  useEffect(() => {
+    const productSelected = router.query.selected as string
+    if (productSelected) {
+      setSelectedRows([productSelected])
+    }
+  }, [router.query])
 
   // ** Handle Change in Cart Quantity
   const handleChangeAmountCart = (item: TItemOrderProduct, quantity: number) => {
@@ -82,7 +113,7 @@ const MyCartPage: NextPage<TProps> = () => {
   // ** Handle Removing Selected Cart Items
   const handleRemoveCartAll = () => {
     if (user?._id) {
-      removeProductFromCart(user?._id, selectRows, orderItems, dispatch);
+      removeProductFromCart(user?._id, selectedRows, orderItems, dispatch);
       toast.success(t('Remove_to_cart_success'));
     } else {
       toast.error(t('Please_login_first'));
@@ -106,15 +137,28 @@ const MyCartPage: NextPage<TProps> = () => {
 
   // ** Handle Checkbox Changes
   const handleOnChangeCheckBox = (value: string) => {
-    const isChecked = selectRows.includes(value);
-    setSelectRows(isChecked ? selectRows.filter(item => item !== value) : [...selectRows, value]);
+    const isChecked = selectedRows.includes(value);
+    setSelectedRows(isChecked ? selectedRows.filter(item => item !== value) : [...selectedRows, value]);
   };
 
   // ** Handle Select All/Deselect All
   const handleChangeCheckAll = () => {
-    const isChecked = memoListAllProductIds.every(item => selectRows.includes(item));
-    setSelectRows(isChecked ? [] : memoListAllProductIds);
+    const isChecked = memoListAllProductIds.every(item => selectedRows.includes(item));
+    setSelectedRows(isChecked ? [] : memoListAllProductIds);
   };
+
+  const handleNavigateCheckoutProduct = () => {
+    const formatData = JSON.stringify(
+      memoItemsSelectedProduct.map(item => ({ product: item.product, amount: item.amount }))
+    )
+    router.push({
+      pathname: ROUTE_CONFIG.CHECKOUT_PRODUCT,
+      query: {
+        totalPrice: memoTotalSelectedProduct,
+        productsSelected: formatData
+      }
+    })
+  }
 
   return (
     <Box sx={{ height: '100%', width: '100%' }}>
@@ -142,7 +186,7 @@ const MyCartPage: NextPage<TProps> = () => {
                 >
                   <Box sx={{ flexBasis: '5%' }}>
                     <Checkbox
-                      checked={memoListAllProductIds.every(item => selectRows.includes(item))}
+                      checked={memoListAllProductIds.every(item => selectedRows.includes(item))}
                       onChange={handleChangeCheckAll}
                     />
                   </Box>
@@ -156,7 +200,7 @@ const MyCartPage: NextPage<TProps> = () => {
                       <IconButton
                         onClick={handleRemoveCartAll}
                         sx={{ color: theme.palette.error.main }}
-                        disabled={!selectRows.length}
+                        disabled={!selectedRows.length}
                       >
                         <Icon icon="mdi:delete-outline" />
                       </IconButton>
@@ -171,7 +215,7 @@ const MyCartPage: NextPage<TProps> = () => {
                 <Box key={item.product} sx={{ display: 'flex', paddingTop: '20px', width: '100%', alignItems: 'flex-start' }}>
                   <Box sx={{ flexBasis: '5%' }}>
                     <Checkbox
-                      checked={selectRows.includes(item.product)}
+                      checked={selectedRows.includes(item.product)}
                       value={item.product}
                       onChange={(e) => handleOnChangeCheckBox(e.target.value)}
                     />
@@ -325,9 +369,16 @@ const MyCartPage: NextPage<TProps> = () => {
               ))}
               {orderItems.length > 0 && (
                 <>
+                  <Box sx={{ display: 'flex', justifyContent: 'flex-end', gap: '2px' }}>
+                    <Typography sx={{ fontSize: '24px', fontWeight: 600 }}>{t('Sum_money')}:</Typography>
+                    <Typography sx={{ fontSize: '24px', fontWeight: 600, color: theme.palette.primary.main }}>
+                      {formatNumberToLocal(memoTotalSelectedProduct)} VND
+                    </Typography>
+                  </Box>
                   <Box sx={{ width: '100%', display: 'flex', justifyContent: 'flex-end', mt: '20px' }}>
                     <Button
-                      disabled={!selectRows.length}
+                      onClick={handleNavigateCheckoutProduct}
+                      disabled={!selectedRows.length}
                       variant='contained'
                       sx={{
                         height: 40,
@@ -337,17 +388,19 @@ const MyCartPage: NextPage<TProps> = () => {
                         fontWeight: 'bold'
                       }}
                     >
-                      <Icon icon='icon-park-outline:buy' fontSize={20} />
+                      <Icon icon='icon-park-outline:buy' fontSize={20} style={{ position: 'relative', top: '-2px' }} />
                       {t('Buy_now')}
                     </Button>
                   </Box>
                 </>
               )}
+
             </Box>
+
             {!orderItems.length && (
               <Box
                 sx={{
-                  display: 'flex',
+
                   justifyContent: 'center',
                   alignItems: 'center',
                   height: '100%',

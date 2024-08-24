@@ -172,7 +172,7 @@ const CartProduct = (props: TCartProduct) => {
 
   return (
     <StyleCard sx={{ width: '100%' }}>
-      <CardMedia component='img' height='194' image={item.image} alt='image' />
+      <CardMedia component='img' height='194' sx={{ mt: 4 }} image={item.image ? item.image : ''} alt='image' />
       <CardContent sx={{ padding: '8px 12px' }}>
         {/* Name   */}
         <Typography

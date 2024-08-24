@@ -351,6 +351,7 @@
   "View": "Xem",
   "Count_in_stock_product": "Còn {{count}} sản phẩm trong kho",
   "Out_of_stock_product": "Sản phẩm đã hết hàng",
+  "Add_to_cart_success": "Thêm vào giỏ hàng thành công",
   "Cart_product_image": "Ảnh",
   "Cart_product_name": "Tên",
   "Cart_product_price": "Giá",

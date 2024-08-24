@@ -191,9 +191,8 @@ const MyProfilePage: NextPage<TProps> = () => {
         role: data.role,
         phoneNumber: data.phoneNumber,
         avatar,
-        address: data.address
-
-        // city: data.city
+        address: data.address,
+        city: data.city
       })
     )
   }
