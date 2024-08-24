@@ -40,6 +40,7 @@ const AxiosInterceptor: FC<TAxiosInterceptor> = ({ children }) => {
   instanceAxios.interceptors.request.use(async config => {
     const { accessToken, refreshToken } = getLocalUserData()
     const { temporaryToken } = getTemporaryToken()
+    const isPublicApi = config?.params?.isPublic
 
     if (accessToken || temporaryToken) {
       let decodedAccessToken: any = {}
@@ -52,8 +53,8 @@ const AxiosInterceptor: FC<TAxiosInterceptor> = ({ children }) => {
         config.headers['Authorization'] = `Bearer ${accessToken ? accessToken : temporaryToken}`
       } else {
         if (refreshToken) {
-          const deoodedRefreshToken: any = jwtDecode(refreshToken)
-          if (deoodedRefreshToken?.exp > Date.now() / 1000) {
+          const decodedRefreshToken: any = jwtDecode(refreshToken)
+          if (decodedRefreshToken?.exp > Date.now() / 1000) {
             await axios
               .post(
                 `${API_ENDPOINT.AUTH.INDEX}/refresh-token`,
@@ -85,7 +86,7 @@ const AxiosInterceptor: FC<TAxiosInterceptor> = ({ children }) => {
           handleRedirectLogin(router, setUser)
         }
       }
-    } else {
+    } else if (!isPublicApi) {
       handleRedirectLogin(router, setUser)
     }
 

@@ -105,6 +105,11 @@ const UserDropdown = (props: TProps) => {
     handleClose()
   }
 
+  const handleNavigateMyProduct = () => {
+    router.push(ROUTE_CONFIG.MY_PRODUCT)
+    handleClose()
+  }
+
   useEffect(() => {
     if (userData) {
       setUser({ ...userData })
@@ -112,7 +117,7 @@ const UserDropdown = (props: TProps) => {
   }, [userData])
 
   return (
-    <React.Fragment>
+    <div>
       <Box sx={{ display: 'flex', alignItems: 'center', textAlign: 'center' }}>
         <Tooltip title={t('Account')}>
           <IconButton
@@ -222,12 +227,19 @@ const UserDropdown = (props: TProps) => {
           </Avatar>{' '}
           {t('My_profile')}
         </MenuItem>
+        <MenuItem onClick={handleNavigateMyProduct}>
+          <Avatar>
+            <Icon icon='tabler:brand-producthunt' />
+          </Avatar>{' '}
+          {t('My_product')}
+        </MenuItem>
         <MenuItem onClick={handleNavigateChangePassword}>
           <Avatar sx={{ backgroundColor: 'transparent' }}>
             <Icon icon='arcticons:password' />
           </Avatar>
           {t('Change_password')}
         </MenuItem>
+        <Divider />
         <MenuItem onClick={logout}>
           <Avatar sx={{ backgroundColor: 'transparent' }}>
             <Icon icon='material-symbols-light:logout' />
@@ -235,7 +247,7 @@ const UserDropdown = (props: TProps) => {
           {t('Logout')}
         </MenuItem>
       </Menu>
-    </React.Fragment>
+    </div>
   )
 }
 

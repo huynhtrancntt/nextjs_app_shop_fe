@@ -3,7 +3,7 @@ import { createContext, useEffect, useState, ReactNode, use } from 'react'
 // ** Next
 import { useRouter } from 'next/router'
 // ** Config
-import authConfig from 'src/configs/auth'
+import authConfig, { LIST_PAGE_PUBLIC } from 'src/configs/auth'
 // ** Types
 import { AuthValuesType, LoginParams, ErrCallbackType, UserDataType } from './types'
 // ** Services
@@ -102,8 +102,18 @@ const AuthProvider = ({ children }: Props) => {
           orderItems: []
         })
       )
-      //router.push('/login')
+      if (!LIST_PAGE_PUBLIC?.some(item => router.asPath?.startsWith(item))) {
+        if (router.asPath !== '/') {
+          router.replace({
+            pathname: '/login',
+            query: { returnUrl: router.asPath }
+          })
+        }
+      }
+
     })
+
+
   }
   const values = {
     user,

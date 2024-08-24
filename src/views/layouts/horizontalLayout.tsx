@@ -20,7 +20,7 @@ import { Button } from '@mui/material'
 import { useRouter } from 'next/router'
 // Config
 import { ROUTE_CONFIG } from 'src/configs/route'
-import CardProduct from './components/card-product'
+import CartProduct from './components/cart-product'
 
 const drawerWidth: number = 240
 
@@ -59,6 +59,18 @@ const HorizontalLayout: NextPage<TProps> = ({ open, toggleDrawer, isHideMenu }) 
   const { user } = useAuth()
   const router = useRouter()
 
+
+  const handleNavigateLogin = () => {
+    if (router.asPath !== '/') {
+      router.replace({
+        pathname: '/login',
+        query: { returnUrl: router.asPath }
+      })
+    } else {
+      router.replace('/login')
+    }
+  }
+
   return (
     <AppBar position='absolute' open={open}>
       <Toolbar
@@ -93,11 +105,11 @@ const HorizontalLayout: NextPage<TProps> = ({ open, toggleDrawer, isHideMenu }) 
         <LanguageDropdown />
         <ModeToggle />
         {/* Giỏ Hàng */}
-        <CardProduct />
+        <CartProduct />
         {user ? (
           <UserDropdown />
         ) : (
-          <Button variant='contained' sx={{ ml: 2, width: 'auto' }} onClick={() => router.push(ROUTE_CONFIG.LOGIN)}>
+          <Button variant='contained' sx={{ ml: 2, width: 'auto' }} onClick={() => handleNavigateLogin()}>
             Sign In
           </Button>
         )}

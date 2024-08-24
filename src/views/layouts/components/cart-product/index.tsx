@@ -43,7 +43,7 @@ type TProps = {}
 const StyleMenuItem = styled(MenuItem)<MenuItemProps>(({ theme }) => ({
 
 }))
-const CardProduct = (props: TProps) => {
+const CartProduct = (props: TProps) => {
   // ** Translation
   const { t, i18n } = useTranslation()
 
@@ -162,7 +162,7 @@ const CardProduct = (props: TProps) => {
           anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
         >
           {orderItems.length > 0 ? (
-            <>
+            <Box sx={{ maxHeight: '300px', overflow: 'auto' }}>
               {orderItems?.map((item: TItemOrderProduct) => (
                 <StyleMenuItem
                   key={item.product}
@@ -170,7 +170,7 @@ const CardProduct = (props: TProps) => {
                 >
                   <Avatar alt={item.name} src={item.image} />
                   <Box sx={{ ml: 2, flex: 1 }}>
-                    <Typography>   {item.name}
+                    <Typography >   {item.name}
                     </Typography>
                     <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
                       {item.discount > 0 && (
@@ -214,13 +214,14 @@ const CardProduct = (props: TProps) => {
                   {t('View_cart')}
                 </Button>
               </Box>
-            </>
+            </Box>
 
           ) : <>
             <Box sx={{ display: 'flex', justifyContent: 'center', width: '300px', mt: 2 }}>
               <NoData widthImage='40px' heightImage='40px' textNoData={t('Cart_is_empty')} />
             </Box>
-          </>}
+          </>
+          }
 
 
 
@@ -236,4 +237,4 @@ const CardProduct = (props: TProps) => {
   )
 }
 
-export default CardProduct
+export default CartProduct

@@ -15,3 +15,26 @@ export type TItemOrderProduct = {
   totalReviews: number
   sold: number
 }
+
+export type TItemOrderProductBuy = {
+  name: string
+  amount: number,
+  image: string,
+  price: number,
+  discount: number,
+  product: string,
+}
+
+export type TParamsCreateOrderProduct = {
+  orderItems: TItemOrderProductBuy[]
+  fullName: string
+  address?: string
+  city: string
+  phone: string
+  paymentMethod: string
+  itemsPrice: number
+  shippingPrice: number
+  totalPrice: number
+  user: string
+  deliveryMethod: string
+}
