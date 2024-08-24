@@ -239,6 +239,7 @@ const UserDropdown = (props: TProps) => {
           </Avatar>
           {t('Change_password')}
         </MenuItem>
+        <Divider />
         <MenuItem onClick={logout}>
           <Avatar sx={{ backgroundColor: 'transparent' }}>
             <Icon icon='material-symbols-light:logout' />

@@ -59,6 +59,8 @@ import { getAllDeliveryTypes } from 'src/services/delivery-type'
 import { getAllCities } from 'src/services/city'
 import { createOrderProductAsync } from 'src/stores/order-product/actions'
 import { ROUTE_CONFIG } from 'src/configs/route'
+import ModalAddAddress from './components/ModalAddAddress'
+import ModalWarning from './components/ModalWarning'
 
 type TProps = {}
 
@@ -131,7 +133,7 @@ const CheckoutProductPage: NextPage<TProps> = () => {
 
     const memoNameCity = useMemo(() => {
         const findCity = optionCities.find(item => item.value === memoAddressDefault?.city)
-        console.log(findCity)
+
 
         return findCity?.label
     }, [memoAddressDefault, optionCities])
@@ -152,8 +154,17 @@ const CheckoutProductPage: NextPage<TProps> = () => {
     }
 
     const handleOrderProduct = () => {
-        console.log("memoQueryProduct", memoQueryProduct, user)
-        console.log("memoAddressDefault", memoAddressDefault)
+
+        if (!paymentSelected) {
+            toast.error('Vui lòng chọn hình thức thanh toán')
+
+            return
+        }
+        if (!memoAddressDefault) {
+            toast.error('Vui lòng thêm địa chỉ giao hàng')
+
+            return
+        }
         const totalPrice = memoPriceShipping + Number(memoQueryProduct.totalPrice)
 
 
@@ -179,10 +190,10 @@ const CheckoutProductPage: NextPage<TProps> = () => {
                         memoAddressDefault?.firstName,
                         i18n.language
                     )
-                    : 'HT',
-                address: memoAddressDefault ? memoAddressDefault.address : 'HO CHI MINH',
-                city: memoAddressDefault ? memoAddressDefault.city : '66c1ce3a971f5e0661e37583',
-                phone: memoAddressDefault ? memoAddressDefault.phoneNumber : '124567892',
+                    : '',
+                address: memoAddressDefault ? memoAddressDefault.address : '',
+                city: memoAddressDefault ? memoAddressDefault.city : '',
+                phone: memoAddressDefault ? memoAddressDefault.phoneNumber : '',
                 shippingPrice: memoPriceShipping,
                 totalPrice: totalPrice
             })
@@ -294,13 +305,19 @@ const CheckoutProductPage: NextPage<TProps> = () => {
                 color: `rgba(${theme.palette.customColors.main}, 0.78)`
             }).then(result => {
                 if (result.isConfirmed) {
-                    console.log('')
+                    router.push(
+                        {
+                            pathname: '/'
+                        }
+                    )
                 }
+
             })
             handleChangeAmountCart(memoQueryProduct.productsSelected)
 
             dispatch(resetInitialState())
-            router.push(ROUTE_CONFIG.MY_CART)
+
+
         } else if (isErrorCreate && messageErrorCreate) {
             toast.error(t('Order_product_error'))
             Swal.fire({
@@ -313,13 +330,14 @@ const CheckoutProductPage: NextPage<TProps> = () => {
             })
             dispatch(resetInitialState())
         }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [isSuccessCreate, isErrorCreate, messageErrorCreate])
 
     return (
         <>
-            {/* {loading || (isLoading && <Spinner />)} */}
-            {/* <ModalWarning open={openWarning} onClose={() => setOpenAddress(false)} />
-            <ModalAddAddress open={openAddress} onClose={() => setOpenAddress(false)} /> */}
+            {loading || (isLoading && <Spinner />)}
+            <ModalWarning open={openWarning} onClose={() => setOpenAddress(false)} />
+            <ModalAddAddress open={openAddress} onClose={() => setOpenAddress(false)} />
 
             <Box
                 sx={{

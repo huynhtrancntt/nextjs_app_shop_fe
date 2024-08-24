@@ -158,7 +158,9 @@ const CartProduct = (props: TCartProduct) => {
   }
 
   const handleBuyProductToCart = (item: TProduct) => {
+
     handleUpdateProductToCart(item)
+
     router.push(
       {
         pathname: ROUTE_CONFIG.MY_CART,
@@ -187,58 +189,63 @@ const CartProduct = (props: TCartProduct) => {
             display: '-webkit-box',
             '-webkitLineClamp': '2',
             '-webkitBoxOrient': 'vertical',
-            minHeight: '32px'
+            minHeight: '48px',
+            mt: 1 // 4px
           }}
         >
           {item.name}
         </Typography>
         {/* Price  / discount*/}
-        <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-          {item.discount > 0 && memoExpiredProduct && (
+        <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 2 }}>
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+            {item.discount > 0 && memoExpiredProduct && (
+              <Typography
+                variant='h6'
+                sx={{
+                  color: theme.palette.error.main,
+                  fontWeight: 'bold',
+                  textDecoration: 'line-through',
+                  fontSize: '14px'
+                }}
+              >
+                {formatNumberToLocal(item.price)} VND
+              </Typography>
+            )}
             <Typography
-              variant='h6'
+              variant='h4'
               sx={{
-                color: theme.palette.error.main,
+                color: theme.palette.primary.main,
                 fontWeight: 'bold',
-                textDecoration: 'line-through',
-                fontSize: '14px'
+                fontSize: '18px'
               }}
             >
-              {formatNumberToLocal(item.price)} VND
+              {item.discount > 0 && memoExpiredProduct ? (
+                <>{formatNumberToLocal((item.price * (100 - item.discount)) / 100)}</>
+              ) : (
+                <>{formatNumberToLocal(item.price)}</>
+              )}{' '}
+              VND
             </Typography>
-          )}
-          <Typography
-            variant='h4'
-            sx={{
-              color: theme.palette.primary.main,
-              fontWeight: 'bold',
-              fontSize: '18px'
-            }}
-          >
-            {item.discount > 0 && memoExpiredProduct ? (
-              <>{formatNumberToLocal((item.price * (100 - item.discount)) / 100)}</>
-            ) : (
-              <>{formatNumberToLocal(item.price)}</>
-            )}{' '}
-            VND
-          </Typography>
+          </Box>
           {item.discount > 0 && memoExpiredProduct && (
             <Box
               sx={{
                 backgroundColor: hexToRGBA(theme.palette.error.main, 0.42),
-                width: '36px',
-                height: '14px',
+                width: '50px',  // Thay đổi kích thước chiều rộng
+                height: '20px',  // Thay đổi kích thước chiều cao
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
-                borderRadius: '2px'
+                borderRadius: '10px',  // Tăng độ bo góc
+                // boxShadow: '0px 4px 6px rgba(0, 0, 0, 0.1)',  // Thêm đổ bóng
               }}
             >
               <Typography
                 variant='h6'
                 sx={{
                   color: theme.palette.error.main,
-                  fontSize: '10px',
+                  fontSize: '12px',  // Tăng kích thước font chữ
+                  fontWeight: 'bold',  // Tạo chữ đậm
                   whiteSpace: 'nowrap'
                 }}
               >
@@ -248,35 +255,49 @@ const CartProduct = (props: TCartProduct) => {
           )}
         </Box>
 
-
-        {/* CountInStock / sold  */}
-        <Typography variant='body2' color='text.secondary'>
-
-          {item.countInStock > 0 ? (
-            <>{t('Count_in_stock_product', { count: item.countInStock })}</>
-          ) : (
-            <span>{t('Out_of_stock_product')}</span>
-          )}
-        </Typography>
-        {item.sold && (
+        <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 2, mt: 1 }}>
+          {/* CountInStock / sold  */}
           <Typography variant='body2' color='text.secondary'>
-            <>{t('Sold_product', { count: item.countInStock })}</>
-          </Typography>
-        )}
 
-        {/* Location */}
-        <Box sx={{ display: 'flex', alignItems: 'center', mt: 1 }}>
-          <Icon icon='mdi:map-marker-outline' />
-          <Typography variant='h6'
-            sx={{
-              // color: theme.palette.error.main,
-              fontWeight: 'bold',
-              // textDecoration: 'line-through',
-              fontSize: '12px',
-            }}>
-            {item?.location?.name}
+            {item.countInStock > 0 ? (
+              <>{t('Count_in_stock_product', { count: item.countInStock })}</>
+            ) : (
+              <span style={{ color: 'red' }}>{t('Out_of_stock_product')}</span>
+            )}
           </Typography>
+          {item.sold && (
+            <Typography variant='body2' color='text.secondary' sx={{ color: "green" }}>
+              <>{t('Sold_product', { count: item.countInStock })}</>
+            </Typography>
+          )}
         </Box>
+
+        <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 2 }}>
+          {/* Location */}
+          <Box sx={{ display: 'flex', alignItems: 'center' }}>
+            <Icon icon='mdi:map-marker-outline' />
+            <Typography variant='h6'
+              sx={{
+                // color: theme.palette.error.main,
+                fontWeight: 'bold',
+                // textDecoration: 'line-through',
+                fontSize: '12px',
+              }}>
+              {item?.location?.name}
+            </Typography>
+          </Box>
+          {/* Like */}
+          <IconButton onClick={() => handleToggleLikeProduct(item._id, Boolean(user && item?.likedBy?.includes(user._id)))}>
+            {user && item?.likedBy?.includes(user._id) ? (
+              <Icon icon='mdi:heart' style={{ color: theme.palette.primary.main }} />
+            ) : (
+              <Icon icon='tabler:heart' style={{ color: theme.palette.primary.main }} />
+            )}
+          </IconButton>
+        </Box>
+
+
+
         {/* averageRating/ so sanh / Đánh giá /  */}
         <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
           <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
@@ -296,14 +317,7 @@ const CartProduct = (props: TCartProduct) => {
               {!!item.totalReviews ? <b>{item.totalReviews}</b> : <span>{t('not_review')}</span>}
             </Typography>
           </Box>
-          {/* Like */}
-          <IconButton onClick={() => handleToggleLikeProduct(item._id, Boolean(user && item?.likedBy?.includes(user._id)))}>
-            {user && item?.likedBy?.includes(user._id) ? (
-              <Icon icon='mdi:heart' style={{ color: theme.palette.primary.main }} />
-            ) : (
-              <Icon icon='tabler:heart' style={{ color: theme.palette.primary.main }} />
-            )}
-          </IconButton>
+
         </Box>
       </CardContent>
       {/* Add to cart / Buy now */}

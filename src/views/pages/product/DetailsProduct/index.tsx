@@ -205,6 +205,11 @@ const DetailsProductPage: NextPage<TProps> = () => {
                   >
                     {dataProduct.name}
                   </Typography>
+                  {dataProduct.sold && (
+                    <Typography variant='body2' color='text.secondary' sx={{ color: "green" }}>
+                      <>{t('Sold_product', { count: dataProduct.countInStock })}</>
+                    </Typography>
+                  )}
                 </Box>
 
                 <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mt: 2 }}>
@@ -247,12 +252,21 @@ const DetailsProductPage: NextPage<TProps> = () => {
                       <span>{t('not_review')}</span>
                     )}
                   </Typography>
-                  {dataProduct.sold && (
-                    <Typography variant='body2' color='text.secondary'>
-                      <>{t('Sold_product', { count: dataProduct.countInStock })}</>
-                    </Typography>
-                  )}
+
                 </Box>
+                <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 2, mt: 1 }}>
+                  {/* CountInStock / sold  */}
+                  <Typography variant='body2' color='text.secondary'>
+
+                    {dataProduct.countInStock > 0 ? (
+                      <>{t('Count_in_stock_product', { count: dataProduct.countInStock })}</>
+                    ) : (
+                      <span style={{ color: 'red' }}>{t('Out_of_stock_product')}</span>
+                    )}
+                  </Typography>
+
+                </Box>
+
                 {/* Location */}
                 <Box sx={{ display: 'flex', alignItems: 'center', mt: 1 }}>
                   <Icon icon='mdi:map-marker-outline' />
@@ -330,101 +344,110 @@ const DetailsProductPage: NextPage<TProps> = () => {
                     </Box>
                   )}
                 </Box>
-                <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, mt: 2 }}>
-                  <IconButton
-                    onClick={() => {
-                      if (amountProduct > 1) {
-                        setAmountProduct((prev) => prev - 1)
+                {dataProduct.countInStock > 0 && (
+                  <>
+                    {/* AmountProduct */}
+                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, mt: 2 }}>
+                      <IconButton
+                        onClick={() => {
+                          if (amountProduct > 1) {
+                            setAmountProduct((prev) => prev - 1)
 
-                      }
+                          }
 
-                    }}
-                    sx={{ backgroundColor: `${theme.palette.primary.main} !important`, color: `${theme.palette.common.white}` }}>
-                    <Icon icon='ic:round-minus'></Icon>
-                  </IconButton>
-                  <CustomTextField
-                    onChange={(e) => {
-                      const numValue = +e.target.value.replace(/\D/g, '')
-                      if (numValue >= 1) {
-                        setAmountProduct(numValue)
-                      }
-                      if (numValue > dataProduct.countInStock) {
-                        setAmountProduct(dataProduct.countInStock)
-                      }
+                        }}
+                        sx={{ backgroundColor: `${theme.palette.primary.main} !important`, color: `${theme.palette.common.white}` }}>
+                        <Icon icon='ic:round-minus'></Icon>
+                      </IconButton>
+                      <CustomTextField
+                        onChange={(e) => {
+                          const numValue = +e.target.value.replace(/\D/g, '')
+                          if (numValue >= 1) {
+                            setAmountProduct(numValue)
+                          }
+                          if (numValue > dataProduct.countInStock) {
+                            setAmountProduct(dataProduct.countInStock)
+                          }
 
-                    }}
+                        }}
 
-                    value={amountProduct}
-                    inputProps={{
-                      inputMode: 'numeric',
-                      pattern: '[0-9]*',
+                        value={amountProduct}
+                        inputProps={{
+                          inputMode: 'numeric',
+                          pattern: '[0-9]*',
 
-                    }}
-                    sx={{
-                      '.MuiInputBase-input.MuiFilledInput-input': { width: '30px' },
-                      '.MuiInputBase-root.MuiFilledInput-root': {
-                        borderTop: 'none',
-                        borderLeft: 'none',
-                        borderRight: 'none',
-                        borderRadius: '0px !important',
-                        '&.Mui-focused': { backgroundColor: `${theme.palette.background.paper} !important`, boxShadow: 'none !important' }
-                      },
+                        }}
+                        sx={{
+                          '.MuiInputBase-input.MuiFilledInput-input': { width: '30px' },
+                          '.MuiInputBase-root.MuiFilledInput-root': {
+                            borderTop: 'none',
+                            borderLeft: 'none',
+                            borderRight: 'none',
+                            borderRadius: '0px !important',
+                            '&.Mui-focused': { backgroundColor: `${theme.palette.background.paper} !important`, boxShadow: 'none !important' }
+                          },
 
-                      ml: 1,
-                      mr: 1
-                    }}></CustomTextField>
+                          ml: 1,
+                          mr: 1
+                        }}></CustomTextField>
 
-                  <IconButton
-                    onClick={() => {
+                      <IconButton
+                        onClick={() => {
 
-                      setAmountProduct((prev) => prev + 1)
-                      if (amountProduct >= dataProduct.countInStock) {
-                        setAmountProduct(dataProduct.countInStock)
-                      }
-                    }}
-                    sx={{ backgroundColor: `${theme.palette.primary.main} !important`, color: `${theme.palette.common.white}` }}
-                  >
-                    <Icon icon='ic:round-plus'></Icon>
-                  </IconButton></Box>
-                <Box
-                  sx={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    paddingBottom: 2,
-                    gap: 4,
-                    mt: 4
-                  }}
-                >
-                  <Button
-                    onClick={() => {
-                      handleAddToCart(dataProduct)
-                    }}
-                    variant='outlined'
-                    sx={{
-                      height: 40,
-                      display: 'flex',
-                      alignItems: 'center',
-                      gap: '2px',
-                      fontWeight: 'bold'
-                    }}
-                  >
-                    <Icon icon='bx:cart' fontSize={24} style={{ position: 'relative', top: '-2px' }} />
-                    {t('Add_to_cart')}
-                  </Button>
-                  <Button
-                    variant='contained'
-                    sx={{
-                      height: 40,
-                      display: 'flex',
-                      alignItems: 'center',
-                      gap: '2px',
-                      fontWeight: 'bold'
-                    }}
-                  >
-                    <Icon icon='icon-park-outline:buy' fontSize={20} style={{ position: 'relative', top: '-2px' }} />
-                    {t('Buy_now')}
-                  </Button>
-                </Box>
+                          setAmountProduct((prev) => prev + 1)
+                          if (amountProduct >= dataProduct.countInStock) {
+                            setAmountProduct(dataProduct.countInStock)
+                          }
+                        }}
+                        sx={{ backgroundColor: `${theme.palette.primary.main} !important`, color: `${theme.palette.common.white}` }}
+                      >
+                        <Icon icon='ic:round-plus'></Icon>
+                      </IconButton>
+                    </Box>
+
+                    {/* Add to cart */}
+                    <Box
+                      sx={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        paddingBottom: 2,
+                        gap: 4,
+                        mt: 4
+                      }}
+                    >
+                      <Button
+                        onClick={() => {
+                          handleAddToCart(dataProduct)
+                        }}
+                        variant='outlined'
+                        sx={{
+                          height: 40,
+                          display: 'flex',
+                          alignItems: 'center',
+                          gap: '2px',
+                          fontWeight: 'bold'
+                        }}
+                      >
+                        <Icon icon='bx:cart' fontSize={24} style={{ position: 'relative', top: '-2px' }} />
+                        {t('Add_to_cart')}
+                      </Button>
+                      <Button
+                        variant='contained'
+                        sx={{
+                          height: 40,
+                          display: 'flex',
+                          alignItems: 'center',
+                          gap: '2px',
+                          fontWeight: 'bold'
+                        }}
+                      >
+                        <Icon icon='icon-park-outline:buy' fontSize={20} style={{ position: 'relative', top: '-2px' }} />
+                        {t('Buy_now')}
+                      </Button>
+                    </Box>
+                  </>
+                )}
+
               </Grid>
             </Grid>
           </Box>

@@ -83,6 +83,7 @@ const MyCartPage: NextPage<TProps> = () => {
 
     return total
   }, [memoItemsSelectedProduct])
+
   useEffect(() => {
     const productSelected = router.query.selected as string
     if (productSelected) {
@@ -104,7 +105,7 @@ const MyCartPage: NextPage<TProps> = () => {
   const handleRemoveCart = (item: TItemOrderProduct) => {
     if (user?._id) {
       removeProductFromCart(user?._id, [item.product], orderItems, dispatch);
-      toast.success(t('Remove_to_cart_success'));
+      toast.success(t('Cart_product_remove'));
     } else {
       toast.error(t('Please_login_first'));
     }
@@ -114,7 +115,7 @@ const MyCartPage: NextPage<TProps> = () => {
   const handleRemoveCartAll = () => {
     if (user?._id) {
       removeProductFromCart(user?._id, selectedRows, orderItems, dispatch);
-      toast.success(t('Remove_to_cart_success'));
+      toast.success(t('Cart_product_remove'));
     } else {
       toast.error(t('Please_login_first'));
     }
@@ -151,13 +152,24 @@ const MyCartPage: NextPage<TProps> = () => {
     const formatData = JSON.stringify(
       memoItemsSelectedProduct.map(item => ({ product: item.product, amount: item.amount }))
     )
-    router.push({
-      pathname: ROUTE_CONFIG.CHECKOUT_PRODUCT,
-      query: {
-        totalPrice: memoTotalSelectedProduct,
-        productsSelected: formatData
-      }
-    })
+    // router.push({
+    //   pathname: ROUTE_CONFIG.CHECKOUT_PRODUCT,
+    //   query: {
+    //     totalPrice: memoTotalSelectedProduct,
+    //     productsSelected: formatData
+    //   }
+    // })
+
+    router.push(
+      {
+        pathname: ROUTE_CONFIG.CHECKOUT_PRODUCT,
+        query: {
+          totalPrice: memoTotalSelectedProduct,
+          productsSelected: formatData
+        }
+      },
+      ROUTE_CONFIG.CHECKOUT_PRODUCT
+    )
   }
 
   return (
